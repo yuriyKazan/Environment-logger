@@ -1,6 +1,7 @@
-# This file was automatically generated for projects
-# without default 'CMakeLists.txt' file.
+# Sources are grouped by layer: periph / logic / transport / reliability.
+file(GLOB_RECURSE app_sources
+     ${CMAKE_SOURCE_DIR}/src/*.c
+     ${CMAKE_SOURCE_DIR}/src/*.cpp)
 
-FILE(GLOB_RECURSE app_sources ${CMAKE_SOURCE_DIR}/src/*.*)
-
-idf_component_register(SRCS ${app_sources})
+idf_component_register(SRCS ${app_sources}
+                       INCLUDE_DIRS "../include")
