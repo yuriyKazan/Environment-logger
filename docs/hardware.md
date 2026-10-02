@@ -1,0 +1,51 @@
+# Hardware: peripherals and GPIO map
+
+Target: ESP32-S3 (`esp32-s3-devkitm-1`), ESP-IDF 5.5.3.
+
+## Peripherals
+
+| Peripheral | Role | Interface | Address / config |
+|---|---|---|---|
+| BME280 | Temperature, humidity, pressure | I2C | `0x76` |
+| DS3231 RTC | Timestamp source | I2C (same bus) | `0x68` |
+| UART0 | Formatted log output | UART | 115200 8N1 |
+| LED_OK | System healthy indicator | GPIO out | via 220 Ω |
+| LED_ERR | Error / recovery indicator | GPIO out | via 220 Ω |
+| Button | Manual event (e.g. force measurement / clear error counter) | GPIO in + interrupt | pull-up, active low |
+| Timer | Measurement tick | `esp_timer` / `gptimer` | 5 s period |
+| Task WDT | Hang detection | `esp_task_wdt` | see [architecture](architecture.md) |
+
+No analog input: the photoresistor was intentionally dropped, because a temperature/humidity/pressure logger has no organic need for it (see [decisions](decisions.md)).
+
+## GPIO map
+
+| Signal | GPIO | Notes |
+|---|---|---|
+| I2C SDA | 8 | 400 kHz, shared by BME280 and DS3231 |
+| I2C SCL | 9 | one 10 kΩ pull-up pair for the whole bus |
+| UART0 TX | 43 | console / log output, 115200 baud |
+| UART0 RX | 44 | default console RX (unused by the application) |
+| LED_OK | 4 | active high, 220 Ω series resistor |
+| LED_ERR | 5 | active high, 220 Ω series resistor |
+| Button | 6 | internal pull-up, falling-edge interrupt |
+
+## Wiring
+
+```
+ESP32-S3                BME280 (0x76)         DS3231 (0x68)
+3V3  ------------------ VCC ----------------- VCC
+GND  ------------------ GND ----------------- GND
+GPIO8 (SDA) ----+------ SDA ----------------- SDA
+GPIO9 (SCL) ----+--+--- SCL ----------------- SCL
+                |  |
+               10k 10k  pull-ups to 3V3 (one pair for the whole bus)
+
+GPIO4 --[220R]--|>|-- GND   (LED_OK)
+GPIO5 --[220R]--|>|-- GND   (LED_ERR)
+GPIO6 --[BTN]-- GND         (internal pull-up enabled)
+```
+
+Notes:
+- DS3231 needs a working CR2032. With a dead or missing battery it reports `2000-01-01 00:00:00`; the firmware must validate the timestamp before logging it.
+- Many BME280 / DS3231 breakout boards already carry I2C pull-ups. Check the total parallel resistance; do not stack extra pull-ups blindly.
+- The KiCad/draw.io schematic is stored in `docs/schematic/` (to be added).
