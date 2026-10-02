@@ -73,3 +73,6 @@ Testing/
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+
+# Secrets and credentials (DO NOT COMMIT)
+include/secrets.h
