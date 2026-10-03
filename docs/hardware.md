@@ -50,4 +50,4 @@ Notes:
 - DS3231 needs a working backup battery. With a dead or missing battery it reports `2000-01-01 00:00:00`; the firmware must validate the timestamp before logging it.
 - I2C pull-ups are provided by the modules (BME280 10 kΩ, DS3231 4.7 kΩ per line), giving about 3.2 kΩ per line in parallel, which is suitable for 400 kHz with short wires. Add external 4.7-10 kΩ pull-ups only if a different module set has none; do not stack extra pull-ups blindly. If 400 kHz is unstable, shorten the wires first, then fall back to 100 kHz.
 - The DS3231 module has a battery charging circuit, so it is fitted with an LIR2032 (a plain CR2032 should not be used with it).
-- The KiCad/draw.io schematic is stored in `docs/schematic/` (to be added).
+- Schematic: KiCad source in `hardware/kicad/`, exported to `docs/schematic/schematic.pdf` and `schematic.png`.
