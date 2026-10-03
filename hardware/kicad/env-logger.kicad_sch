@@ -1,5 +1,5 @@
 (kicad_sch
-	(version 20250610)
+	(version 20260306)
 	(generator "eeschema")
 	(generator_version "10.0")
 	(uuid "262bbaa9-9024-461e-bff3-2d552d6a7461")
@@ -10,146 +10,6 @@
 		(rev "0.1")
 	)
 	(lib_symbols
-		(symbol "Device:R"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "R"
-				(at 2.032 0 90)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "R"
-				(at 0 0 90)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at -1.778 0 90)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "R_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "Device:LED"
 			(pin_numbers
 				(hide yes)
@@ -351,6 +211,146 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:R"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "R"
+				(at 2.032 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "R"
+				(at 0 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at -1.778 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "R_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Switch:SW_Push"
 			(pin_numbers
 				(hide yes)
@@ -515,33 +515,27 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "power:GND"
-			(power global)
-			(pin_numbers
-				(hide yes)
-			)
+		(symbol "env-logger:BME280_module"
 			(pin_names
-				(offset 0)
-				(hide yes)
+				(offset 1.016)
 			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(in_pos_files yes)
 			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "#PWR"
-				(at 0 -6.35 0)
+			(property "Reference" "U"
+				(at 0 12.7 0)
 				(show_name no)
 				(do_not_autoplace no)
-				(hide yes)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" "GND"
-				(at 0 -3.81 0)
+			(property "Value" "BME280_module"
+				(at 0 -12.7 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
@@ -572,7 +566,7 @@
 					)
 				)
 			)
-			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(property "Description" "BME280 breakout module, I2C address 0x76 (on-board 10k pull-ups)"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -583,36 +577,24 @@
 					)
 				)
 			)
-			(property "ki_keywords" "global power"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "GND_0_1"
-				(polyline
-					(pts
-						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
-					)
+			(symbol "BME280_module_0_1"
+				(rectangle
+					(start -12.7 10.16)
+					(end 12.7 -10.16)
 					(stroke
-						(width 0)
+						(width 0.254)
 						(type default)
 					)
 					(fill
-						(type none)
+						(type background)
 					)
 				)
 			)
-			(symbol "GND_1_1"
+			(symbol "BME280_module_1_1"
 				(pin power_in line
-					(at 0 0 270)
-					(length 0)
-					(name ""
+					(at -17.78 7.62 0)
+					(length 5.08)
+					(name "VCC"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -620,6 +602,452 @@
 						)
 					)
 					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -17.78 2.54 0)
+					(length 5.08)
+					(name "SCL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -17.78 -2.54 0)
+					(length 5.08)
+					(name "SDA"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -17.78 -7.62 0)
+					(length 5.08)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "env-logger:DS3231_module"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U"
+				(at 0 12.7 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "DS3231_module"
+				(at 0 -12.7 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "DS3231 RTC module (ZS-042 style), I2C address 0x68 (on-board 4.7k pull-ups); 32K and SQW unused"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "DS3231_module_0_1"
+				(rectangle
+					(start -12.7 10.16)
+					(end 12.7 -10.16)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "DS3231_module_1_1"
+				(pin power_in line
+					(at -17.78 7.62 0)
+					(length 5.08)
+					(name "VCC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -17.78 2.54 0)
+					(length 5.08)
+					(name "SCL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -17.78 -2.54 0)
+					(length 5.08)
+					(name "SDA"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -17.78 -7.62 0)
+					(length 5.08)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "env-logger:ESP32-S3-DevKitM-1"
+			(pin_names
+				(offset 1.016)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U"
+				(at 0 21.59 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "ESP32-S3-DevKitM-1"
+				(at 0 -21.59 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "ESP32-S3-DevKitM-1 development board (module-level symbol, only used pins)"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "ESP32-S3-DevKitM-1_0_1"
+				(rectangle
+					(start -25.4 19.05)
+					(end 25.4 -19.05)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "ESP32-S3-DevKitM-1_1_1"
+				(pin power_out line
+					(at -30.48 15.24 0)
+					(length 5.08)
+					(name "3V3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at -30.48 7.62 0)
+					(length 5.08)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -30.48 0 0)
+					(length 5.08)
+					(name "GPIO43_TX0"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at -30.48 -7.62 0)
+					(length 5.08)
+					(name "GPIO44_RX0"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 30.48 15.24 180)
+					(length 5.08)
+					(name "GPIO8_SDA"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 30.48 7.62 180)
+					(length 5.08)
+					(name "GPIO9_SCL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 30.48 0 180)
+					(length 5.08)
+					(name "GPIO4_LED_OK"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 30.48 -7.62 180)
+					(length 5.08)
+					(name "GPIO5_LED_ERR"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 30.48 -15.24 180)
+					(length 5.08)
+					(name "GPIO6_BUTTON"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -769,349 +1197,1666 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "env-logger:ESP32-S3-DevKitM-1"
+		(symbol "power:GND"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 1.016)
+				(offset 0)
+				(hide yes)
 			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "U"
-				(at 0 21.59 0)
-				(effects (font (size 1.27 1.27)))
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
 			)
-			(property "Value" "ESP32-S3-DevKitM-1"
-				(at 0 -21.59 0)
-				(effects (font (size 1.27 1.27)))
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
 			)
 			(property "Footprint" ""
 				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
 				(hide yes)
-				(effects (font (size 1.27 1.27)))
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
 			)
 			(property "Datasheet" ""
 				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
 				(hide yes)
-				(effects (font (size 1.27 1.27)))
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
 			)
-			(property "Description" "ESP32-S3-DevKitM-1 development board (module-level symbol, only used pins)"
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
 				(hide yes)
-				(effects (font (size 1.27 1.27)))
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
 			)
-			(symbol "ESP32-S3-DevKitM-1_0_1"
-				(rectangle
-					(start -25.4 19.05)
-					(end 25.4 -19.05)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "GND_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
 					(stroke
-						(width 0.254)
+						(width 0)
 						(type default)
 					)
 					(fill
-						(type background)
+						(type none)
 					)
 				)
 			)
-			(symbol "ESP32-S3-DevKitM-1_1_1"
-				(pin power_out line
-					(at -30.48 15.24 0)
-					(length 5.08)
-					(name "3V3"
-						(effects (font (size 1.27 1.27)))
+			(symbol "GND_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
 					)
 					(number "1"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin power_out line
-					(at -30.48 7.62 0)
-					(length 5.08)
-					(name "GND"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "2"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin bidirectional line
-					(at -30.48 0 0)
-					(length 5.08)
-					(name "GPIO43_TX0"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "3"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin bidirectional line
-					(at -30.48 -7.62 0)
-					(length 5.08)
-					(name "GPIO44_RX0"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "4"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin bidirectional line
-					(at 30.48 15.24 180)
-					(length 5.08)
-					(name "GPIO8_SDA"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "5"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin bidirectional line
-					(at 30.48 7.62 180)
-					(length 5.08)
-					(name "GPIO9_SCL"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "6"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin bidirectional line
-					(at 30.48 0 180)
-					(length 5.08)
-					(name "GPIO4_LED_OK"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "7"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin bidirectional line
-					(at 30.48 -7.62 180)
-					(length 5.08)
-					(name "GPIO5_LED_ERR"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "8"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin bidirectional line
-					(at 30.48 -15.24 180)
-					(length 5.08)
-					(name "GPIO6_BUTTON"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "9"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "env-logger:BME280_module"
-			(pin_names
-				(offset 1.016)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "U"
-				(at 0 12.7 0)
-				(effects (font (size 1.27 1.27)))
-			)
-			(property "Value" "BME280_module"
-				(at 0 -12.7 0)
-				(effects (font (size 1.27 1.27)))
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(hide yes)
-				(effects (font (size 1.27 1.27)))
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(hide yes)
-				(effects (font (size 1.27 1.27)))
-			)
-			(property "Description" "BME280 breakout module, I2C address 0x76 (on-board 10k pull-ups)"
-				(at 0 0 0)
-				(hide yes)
-				(effects (font (size 1.27 1.27)))
-			)
-			(symbol "BME280_module_0_1"
-				(rectangle
-					(start -12.7 10.16)
-					(end 12.7 -10.16)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-			)
-			(symbol "BME280_module_1_1"
-				(pin power_in line
-					(at -17.78 7.62 0)
-					(length 5.08)
-					(name "VCC"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "1"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin input line
-					(at -17.78 2.54 0)
-					(length 5.08)
-					(name "SCL"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "2"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin bidirectional line
-					(at -17.78 -2.54 0)
-					(length 5.08)
-					(name "SDA"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "3"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin power_in line
-					(at -17.78 -7.62 0)
-					(length 5.08)
-					(name "GND"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "4"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "env-logger:DS3231_module"
-			(pin_names
-				(offset 1.016)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "U"
-				(at 0 12.7 0)
-				(effects (font (size 1.27 1.27)))
-			)
-			(property "Value" "DS3231_module"
-				(at 0 -12.7 0)
-				(effects (font (size 1.27 1.27)))
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(hide yes)
-				(effects (font (size 1.27 1.27)))
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(hide yes)
-				(effects (font (size 1.27 1.27)))
-			)
-			(property "Description" "DS3231 RTC module (ZS-042 style), I2C address 0x68 (on-board 4.7k pull-ups); 32K and SQW unused"
-				(at 0 0 0)
-				(hide yes)
-				(effects (font (size 1.27 1.27)))
-			)
-			(symbol "DS3231_module_0_1"
-				(rectangle
-					(start -12.7 10.16)
-					(end 12.7 -10.16)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-			)
-			(symbol "DS3231_module_1_1"
-				(pin power_in line
-					(at -17.78 7.62 0)
-					(length 5.08)
-					(name "VCC"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "1"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin input line
-					(at -17.78 2.54 0)
-					(length 5.08)
-					(name "SCL"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "2"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin bidirectional line
-					(at -17.78 -2.54 0)
-					(length 5.08)
-					(name "SDA"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "3"
-						(effects (font (size 1.27 1.27)))
-					)
-				)
-				(pin power_in line
-					(at -17.78 -7.62 0)
-					(length 5.08)
-					(name "GND"
-						(effects (font (size 1.27 1.27)))
-					)
-					(number "4"
-						(effects (font (size 1.27 1.27)))
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
 					)
 				)
 			)
 			(embedded_fonts no)
 		)
 	)
+	(text "ESP32-S3-DevKitM-1 + BME280 + DS3231 on one I2C bus (400 kHz), 2 status LEDs, 1 button"
+		(exclude_from_sim no)
+		(at 15.24 20.32 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "4e19542d-69c9-4641-8aa0-5342ef27b536")
+	)
+	(text "Environment Logger - schematic (module level)"
+		(exclude_from_sim no)
+		(at 15.24 12.7 0)
+		(effects
+			(font
+				(size 3 3)
+				(bold yes)
+			)
+			(justify left top)
+		)
+		(uuid "7f303b68-3a12-49ea-b7a5-68f9565b597e")
+	)
+	(text "Notes\n1. I2C pull-ups: no external resistors. The modules already have them\n   (BME280: 10k per line, DS3231: 4.7k per line, about 3.2k in parallel).\n2. I2C addresses: BME280 = 0x76, DS3231 = 0x68. SDA = GPIO8, SCL = GPIO9.\n3. Power: 5V enters via the DevKitM-1 USB connector; the on-board regulator\n   supplies 3V3 to both modules.\n4. UART0 (GPIO43/44) is wired on the DevKitM-1 to its USB-UART bridge;\n   the log is read through the same USB connector.\n5. LED series resistors 220 ohm. Button is active low, internal pull-up\n   is enabled in firmware.\n6. DS3231 pins 32K and SQW are not used."
+		(exclude_from_sim no)
+		(at 15.24 140 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "b176a03d-eda2-4063-8a72-48ac276943ca")
+	)
+	(no_connect
+		(at 45.72 88.9)
+		(uuid "3a70aef8-095e-4286-8633-78dfa3ed6dc1")
+	)
+	(no_connect
+		(at 45.72 96.52)
+		(uuid "7935cccb-b793-493e-8241-c06bcf3f89a2")
+	)
+	(wire
+		(pts
+			(xy 123.19 88.9) (xy 129.54 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "05b2b1e7-18a1-4d46-942f-3f9b348da3e7")
+	)
+	(wire
+		(pts
+			(xy 106.68 96.52) (xy 115.57 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0d3f489e-eba4-468b-8ef1-61b2fe6f0612")
+	)
+	(wire
+		(pts
+			(xy 106.68 88.9) (xy 115.57 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0ea5dcc0-d846-4b59-a8f8-e7775e99a370")
+	)
+	(wire
+		(pts
+			(xy 106.68 73.66) (xy 114.3 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "359fb6fc-fac7-42d1-9986-3be43aed8eb8")
+	)
+	(wire
+		(pts
+			(xy 45.72 81.28) (xy 35.56 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "47a1f05a-d071-4444-a657-bb05c7b052cd")
+	)
+	(wire
+		(pts
+			(xy 137.16 88.9) (xy 142.24 88.9)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4915ec67-6b94-475f-8913-19caa530300e")
+	)
+	(wire
+		(pts
+			(xy 198.12 78.74) (xy 190.5 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "49a85d85-e199-4efa-adff-9605f100c702")
+	)
+	(wire
+		(pts
+			(xy 106.68 81.28) (xy 114.3 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4a61d8d7-b444-4bf6-9c25-5934faf9184a")
+	)
+	(wire
+		(pts
+			(xy 198.12 124.46) (xy 190.5 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6c810c53-60bd-47b4-8f44-10408b1df222")
+	)
+	(wire
+		(pts
+			(xy 198.12 114.3) (xy 190.5 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7db32461-80e7-4799-8ac2-95f92fcba81a")
+	)
+	(wire
+		(pts
+			(xy 198.12 83.82) (xy 190.5 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7fc4e91b-7df4-4bd1-b064-1c6b3f3f854c")
+	)
+	(wire
+		(pts
+			(xy 45.72 73.66) (xy 35.56 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8309ff29-d684-4a43-b46e-a02a88af001d")
+	)
+	(wire
+		(pts
+			(xy 198.12 73.66) (xy 190.5 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "934b9a88-ace3-461b-934c-4705d2c28dee")
+	)
+	(wire
+		(pts
+			(xy 123.19 96.52) (xy 129.54 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9b13b19b-a0d8-444b-9db2-93d4b66c894b")
+	)
+	(wire
+		(pts
+			(xy 198.12 129.54) (xy 190.5 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a07f77b1-c395-4c99-aaab-a372a1d214a5")
+	)
+	(wire
+		(pts
+			(xy 106.68 104.14) (xy 119.38 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a0e02f72-bef1-4853-9c09-c08fcc533591")
+	)
+	(wire
+		(pts
+			(xy 198.12 119.38) (xy 190.5 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b5b5d156-19ac-49c9-91d3-f0de7c20caf7")
+	)
+	(wire
+		(pts
+			(xy 137.16 96.52) (xy 142.24 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "be322785-74ce-4dba-959e-e985e51d6503")
+	)
+	(wire
+		(pts
+			(xy 198.12 68.58) (xy 190.5 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ebda2bd1-891b-43db-9dbd-3e86c4621102")
+	)
+	(wire
+		(pts
+			(xy 129.54 104.14) (xy 134.62 104.14)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fd4bf1ca-84ee-4399-b9b4-a7512aeb7390")
+	)
+	(label "SCL"
+		(at 190.5 73.66 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "46edf50b-7833-4576-9d3e-6b46abf70af6")
+	)
+	(label "SCL"
+		(at 114.3 81.28 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "4f3d892d-7653-4a42-914e-8c22e947b42e")
+	)
+	(label "SCL"
+		(at 190.5 119.38 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "750ca9e1-98ce-4ad9-ad56-456a8d719e34")
+	)
+	(label "SDA"
+		(at 190.5 78.74 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "986b5f12-c0d4-4a08-afa0-4639aa343c0b")
+	)
+	(label "SDA"
+		(at 114.3 73.66 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b90c0bd9-2e1a-45c3-8ecc-eedaa26690dc")
+	)
+	(label "SDA"
+		(at 190.5 124.46 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "ef09d14d-cba8-4948-984d-69a30f28b8e6")
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 190.5 83.82 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "06bbe174-c1c7-4ae4-94c4-1b60aaa96771")
+		(property "Reference" "#PWR07"
+			(at 190.5 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 190.5 87.63 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 190.5 83.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 83.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 190.5 83.82 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ab4fae01-029a-40f1-a64a-5429bcd26974")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "#PWR07")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 190.5 68.58 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "0a52a258-023c-49ce-9dad-764d46e8eefb")
+		(property "Reference" "#PWR06"
+			(at 190.5 63.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 190.5 64.77 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 190.5 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 190.5 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "b04b6f93-8fc8-42c5-9781-c5628629f634")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "#PWR06")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "env-logger:BME280_module")
+		(at 215.9 76.2 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "0b7ac5a5-afea-403f-bc5a-523e3385e152")
+		(property "Reference" "U2"
+			(at 215.9 63.5 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "BME280 module (0x76)"
+			(at 215.9 88.9 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 215.9 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 215.9 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 215.9 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "67ba7c0c-6da9-4cce-a651-5fcfac9affc0")
+		)
+		(pin "2"
+			(uuid "79180307-aaa7-46e4-a6c2-ab2a688cb2a1")
+		)
+		(pin "3"
+			(uuid "bd97583d-ac73-47b8-93ee-ce6f2f8da982")
+		)
+		(pin "4"
+			(uuid "e7dabcda-ab4e-48d0-80e4-528c292e5100")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "U2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Switch:SW_Push")
+		(at 124.46 104.14 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "0cd6dea3-34f6-4df4-88a2-8914995d1366")
+		(property "Reference" "SW1"
+			(at 124.46 99.822 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "BUTTON"
+			(at 124.46 108.64 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 124.46 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 124.46 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 124.46 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "6b0d51ab-6cf1-4b48-935f-ec4d0ce96470")
+		)
+		(pin "2"
+			(uuid "e4c516c9-d4b6-4dba-9fea-13cd96046b65")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "SW1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 35.56 81.28 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "180a0dd6-d911-43a0-90ad-41086b2ae82a")
+		(property "Reference" "#PWR02"
+			(at 35.56 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 35.56 85.09 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 35.56 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 35.56 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 35.56 81.28 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c36b1561-3718-466a-8650-210e57fa3e5d")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "#PWR02")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 35.56 73.66 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "348cc596-2632-44d8-8774-d31f1d1577b1")
+		(property "Reference" "#PWR01"
+			(at 35.56 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 35.56 69.85 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 35.56 73.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 35.56 73.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 35.56 73.66 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "b2ac5e37-07d0-4553-b769-96c8490b1bdf")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "#PWR01")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 190.5 114.3 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "4b3f0356-0716-4c15-bdbc-9f73743746d5")
+		(property "Reference" "#PWR08"
+			(at 190.5 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 190.5 110.49 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 190.5 114.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 114.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 190.5 114.3 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "251c14ba-7ba2-4fac-8960-6c527e2e0331")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "#PWR08")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 142.24 88.9 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "5f94e9eb-71a5-421c-a256-6a127cb78df1")
+		(property "Reference" "#PWR03"
+			(at 142.24 93.98 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 142.24 92.71 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 142.24 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 142.24 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 142.24 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "cae01dc4-83b8-4228-96d0-683793a4effe")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "#PWR03")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:LED")
+		(at 133.35 96.52 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "713eab4e-b242-4185-80cb-d696facc5c49")
+		(property "Reference" "D2"
+			(at 133.096 93.98 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "LED_ERR"
+			(at 133.35 99.52 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 133.35 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 133.35 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 133.35 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "4d667eb1-2725-42d5-a0c9-7759176c647e")
+		)
+		(pin "2"
+			(uuid "08411eb3-f9cd-40cc-ae67-938a0a9d1145")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "D2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 119.38 96.52 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "74437ceb-b7bd-4819-95fd-b3f0e6ba73f4")
+		(property "Reference" "R2"
+			(at 119.38 93.52 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "220"
+			(at 119.38 99.52 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 119.38 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 119.38 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 119.38 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d2e3819f-0713-458c-b8d7-fbdadc19b7d3")
+		)
+		(pin "2"
+			(uuid "1e604252-75eb-422b-9218-a8f156a1dacd")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "R2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 190.5 129.54 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "770581d6-9c0b-401b-827f-e9f01e498345")
+		(property "Reference" "#PWR09"
+			(at 190.5 134.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 190.5 133.35 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 190.5 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 190.5 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 190.5 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "54cfd488-cb70-4449-9a6e-3b87b40edb61")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "#PWR09")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 142.24 96.52 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "8731d6da-ecb2-42c9-ac6d-53fd1d8d8d93")
+		(property "Reference" "#PWR04"
+			(at 142.24 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 142.24 100.33 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 142.24 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 142.24 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 142.24 96.52 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "41bd6c24-297c-4bba-9793-f57b240380ad")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "#PWR04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 134.62 104.14 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "aaaa8d9e-d25a-4a64-8eb3-ff1c9e445198")
+		(property "Reference" "#PWR05"
+			(at 134.62 109.22 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 134.62 107.95 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 134.62 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 134.62 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 134.62 104.14 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "8c388023-4d6b-4c71-8285-34f168b236d1")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "#PWR05")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "env-logger:DS3231_module")
+		(at 215.9 121.92 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "bae7e7e2-ed1a-4140-809b-9855b5b37cfe")
+		(property "Reference" "U3"
+			(at 215.9 109.22 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "DS3231 module (0x68)"
+			(at 215.9 134.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 215.9 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 215.9 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 215.9 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "fb135f68-30ec-41ab-9004-dd57e22852b7")
+		)
+		(pin "2"
+			(uuid "53eb215c-7cee-430d-9137-0e6a53eaf65d")
+		)
+		(pin "3"
+			(uuid "7fe9711c-a0e8-49d8-80b7-f8e30572643f")
+		)
+		(pin "4"
+			(uuid "44aa5f5d-a891-4fd1-80ef-191d8ed1757c")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "U3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:LED")
+		(at 133.35 88.9 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "dc17980a-055a-468e-8b88-49d39649ae1a")
+		(property "Reference" "D1"
+			(at 133.35 85.9 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "LED_OK"
+			(at 133.35 91.9 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 133.35 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 133.35 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 133.35 88.9 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "b042e147-fa28-4a47-9fb4-b190ac6064b8")
+		)
+		(pin "2"
+			(uuid "eba953d8-10f8-43d7-9c8e-9a59e7241ad2")
+		)
+		(instances
+			(project "env-logger"
+				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
+					(reference "D1")
+					(unit 1)
+				)
+			)
+		)
+	)
 	(symbol
 		(lib_id "env-logger:ESP32-S3-DevKitM-1")
 		(at 76.2 88.9 0)
 		(unit 1)
+		(body_style 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
+		(in_pos_files yes)
 		(dnp no)
 		(uuid "f2076364-8ff1-457b-93d9-7812fc61509e")
 		(property "Reference" "U1"
 			(at 76.2 68.58 0)
-			(effects (font (size 1.27 1.27)))
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(property "Value" "ESP32-S3-DevKitM-1"
 			(at 76.2 109.22 0)
-			(effects (font (size 1.27 1.27)))
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(property "Footprint" ""
 			(at 76.2 88.9 0)
 			(hide yes)
-			(effects (font (size 1.27 1.27)))
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(property "Datasheet" ""
 			(at 76.2 88.9 0)
 			(hide yes)
-			(effects (font (size 1.27 1.27)))
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(property "Description" ""
 			(at 76.2 88.9 0)
 			(hide yes)
-			(effects (font (size 1.27 1.27)))
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(pin "1"
 			(uuid "a41115bf-5b2f-478e-b404-25ee592573c5")
@@ -1149,205 +2894,69 @@
 			)
 		)
 	)
-	(wire
-		(pts
-			(xy 45.72 73.66) (xy 35.56 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8309ff29-d684-4a43-b46e-a02a88af001d")
-	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 35.56 73.66 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "348cc596-2632-44d8-8774-d31f1d1577b1")
-		(property "Reference" "#PWR01"
-			(at 35.56 68.58 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "+3V3"
-			(at 35.56 69.85 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 35.56 73.66 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 35.56 73.66 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 35.56 73.66 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "b2ac5e37-07d0-4553-b769-96c8490b1bdf")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "#PWR01")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 45.72 81.28) (xy 35.56 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "47a1f05a-d071-4444-a657-bb05c7b052cd")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 35.56 81.28 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "180a0dd6-d911-43a0-90ad-41086b2ae82a")
-		(property "Reference" "#PWR02"
-			(at 35.56 86.36 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "GND"
-			(at 35.56 85.09 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 35.56 81.28 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 35.56 81.28 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 35.56 81.28 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "c36b1561-3718-466a-8650-210e57fa3e5d")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "#PWR02")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(no_connect
-		(at 45.72 88.9)
-		(uuid "3a70aef8-095e-4286-8633-78dfa3ed6dc1")
-	)
-	(no_connect
-		(at 45.72 96.52)
-		(uuid "7935cccb-b793-493e-8241-c06bcf3f89a2")
-	)
-	(wire
-		(pts
-			(xy 106.68 73.66) (xy 114.3 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "359fb6fc-fac7-42d1-9986-3be43aed8eb8")
-	)
-	(label "SDA"
-		(at 114.3 73.66 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "b90c0bd9-2e1a-45c3-8ecc-eedaa26690dc")
-	)
-	(wire
-		(pts
-			(xy 106.68 81.28) (xy 114.3 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4a61d8d7-b444-4bf6-9c25-5934faf9184a")
-	)
-	(label "SCL"
-		(at 114.3 81.28 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "4f3d892d-7653-4a42-914e-8c22e947b42e")
-	)
-	(wire
-		(pts
-			(xy 106.68 88.9) (xy 115.57 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0ea5dcc0-d846-4b59-a8f8-e7775e99a370")
-	)
 	(symbol
 		(lib_id "Device:R")
 		(at 119.38 88.9 90)
 		(unit 1)
+		(body_style 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
+		(in_pos_files yes)
 		(dnp no)
 		(uuid "ff2f8aa0-d4b4-42f6-bc7a-9417cd4b4dab")
 		(property "Reference" "R1"
 			(at 119.38 85.9 90)
-			(effects (font (size 1.27 1.27)))
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(property "Value" "220"
 			(at 119.38 91.9 90)
-			(effects (font (size 1.27 1.27)))
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(property "Footprint" ""
 			(at 119.38 88.9 0)
 			(hide yes)
-			(effects (font (size 1.27 1.27)))
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(property "Datasheet" ""
 			(at 119.38 88.9 0)
 			(hide yes)
-			(effects (font (size 1.27 1.27)))
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(property "Description" ""
 			(at 119.38 88.9 0)
 			(hide yes)
-			(effects (font (size 1.27 1.27)))
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
 		(pin "1"
 			(uuid "51985930-f79d-480b-8d3f-95790632bda5")
@@ -1363,839 +2972,6 @@
 				)
 			)
 		)
-	)
-	(wire
-		(pts
-			(xy 123.19 88.9) (xy 129.54 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "05b2b1e7-18a1-4d46-942f-3f9b348da3e7")
-	)
-	(symbol
-		(lib_id "Device:LED")
-		(at 133.35 88.9 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "dc17980a-055a-468e-8b88-49d39649ae1a")
-		(property "Reference" "D1"
-			(at 133.35 85.9 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "LED_OK"
-			(at 133.35 91.9 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 133.35 88.9 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 133.35 88.9 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 133.35 88.9 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "b042e147-fa28-4a47-9fb4-b190ac6064b8")
-		)
-		(pin "2"
-			(uuid "eba953d8-10f8-43d7-9c8e-9a59e7241ad2")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "D1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 137.16 88.9) (xy 142.24 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4915ec67-6b94-475f-8913-19caa530300e")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 142.24 88.9 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "5f94e9eb-71a5-421c-a256-6a127cb78df1")
-		(property "Reference" "#PWR03"
-			(at 142.24 93.98 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "GND"
-			(at 142.24 92.71 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 142.24 88.9 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 142.24 88.9 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 142.24 88.9 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "cae01dc4-83b8-4228-96d0-683793a4effe")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "#PWR03")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 106.68 96.52) (xy 115.57 96.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0d3f489e-eba4-468b-8ef1-61b2fe6f0612")
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 119.38 96.52 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "74437ceb-b7bd-4819-95fd-b3f0e6ba73f4")
-		(property "Reference" "R2"
-			(at 119.38 93.52 90)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "220"
-			(at 119.38 99.52 90)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 119.38 96.52 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 119.38 96.52 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 119.38 96.52 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "d2e3819f-0713-458c-b8d7-fbdadc19b7d3")
-		)
-		(pin "2"
-			(uuid "1e604252-75eb-422b-9218-a8f156a1dacd")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "R2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 123.19 96.52) (xy 129.54 96.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9b13b19b-a0d8-444b-9db2-93d4b66c894b")
-	)
-	(symbol
-		(lib_id "Device:LED")
-		(at 133.35 96.52 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "713eab4e-b242-4185-80cb-d696facc5c49")
-		(property "Reference" "D2"
-			(at 133.35 93.52 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "LED_ERR"
-			(at 133.35 99.52 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 133.35 96.52 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 133.35 96.52 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 133.35 96.52 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "4d667eb1-2725-42d5-a0c9-7759176c647e")
-		)
-		(pin "2"
-			(uuid "08411eb3-f9cd-40cc-ae67-938a0a9d1145")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "D2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 137.16 96.52) (xy 142.24 96.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "be322785-74ce-4dba-959e-e985e51d6503")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 142.24 96.52 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "8731d6da-ecb2-42c9-ac6d-53fd1d8d8d93")
-		(property "Reference" "#PWR04"
-			(at 142.24 101.6 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "GND"
-			(at 142.24 100.33 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 142.24 96.52 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 142.24 96.52 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 142.24 96.52 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "41bd6c24-297c-4bba-9793-f57b240380ad")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "#PWR04")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 106.68 104.14) (xy 119.38 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a0e02f72-bef1-4853-9c09-c08fcc533591")
-	)
-	(symbol
-		(lib_id "Switch:SW_Push")
-		(at 124.46 104.14 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "0cd6dea3-34f6-4df4-88a2-8914995d1366")
-		(property "Reference" "SW1"
-			(at 124.46 100.64 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "BUTTON"
-			(at 124.46 108.64 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 124.46 104.14 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 124.46 104.14 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 124.46 104.14 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "6b0d51ab-6cf1-4b48-935f-ec4d0ce96470")
-		)
-		(pin "2"
-			(uuid "e4c516c9-d4b6-4dba-9fea-13cd96046b65")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "SW1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 129.54 104.14) (xy 134.62 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fd4bf1ca-84ee-4399-b9b4-a7512aeb7390")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 134.62 104.14 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "aaaa8d9e-d25a-4a64-8eb3-ff1c9e445198")
-		(property "Reference" "#PWR05"
-			(at 134.62 109.22 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "GND"
-			(at 134.62 107.95 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 134.62 104.14 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 134.62 104.14 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 134.62 104.14 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "8c388023-4d6b-4c71-8285-34f168b236d1")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "#PWR05")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "env-logger:BME280_module")
-		(at 215.9 76.2 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "0b7ac5a5-afea-403f-bc5a-523e3385e152")
-		(property "Reference" "U2"
-			(at 215.9 63.5 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "BME280 module (0x76)"
-			(at 215.9 88.9 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 215.9 76.2 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 215.9 76.2 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 215.9 76.2 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "67ba7c0c-6da9-4cce-a651-5fcfac9affc0")
-		)
-		(pin "2"
-			(uuid "79180307-aaa7-46e4-a6c2-ab2a688cb2a1")
-		)
-		(pin "3"
-			(uuid "bd97583d-ac73-47b8-93ee-ce6f2f8da982")
-		)
-		(pin "4"
-			(uuid "e7dabcda-ab4e-48d0-80e4-528c292e5100")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "U2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 198.12 68.58) (xy 190.5 68.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ebda2bd1-891b-43db-9dbd-3e86c4621102")
-	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 190.5 68.58 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "0a52a258-023c-49ce-9dad-764d46e8eefb")
-		(property "Reference" "#PWR06"
-			(at 190.5 63.5 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "+3V3"
-			(at 190.5 64.77 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 190.5 68.58 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 190.5 68.58 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 190.5 68.58 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "b04b6f93-8fc8-42c5-9781-c5628629f634")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "#PWR06")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 198.12 73.66) (xy 190.5 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "934b9a88-ace3-461b-934c-4705d2c28dee")
-	)
-	(label "SCL"
-		(at 190.5 73.66 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "46edf50b-7833-4576-9d3e-6b46abf70af6")
-	)
-	(wire
-		(pts
-			(xy 198.12 78.74) (xy 190.5 78.74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "49a85d85-e199-4efa-adff-9605f100c702")
-	)
-	(label "SDA"
-		(at 190.5 78.74 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "986b5f12-c0d4-4a08-afa0-4639aa343c0b")
-	)
-	(wire
-		(pts
-			(xy 198.12 83.82) (xy 190.5 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7fc4e91b-7df4-4bd1-b064-1c6b3f3f854c")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 190.5 83.82 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "06bbe174-c1c7-4ae4-94c4-1b60aaa96771")
-		(property "Reference" "#PWR07"
-			(at 190.5 88.9 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "GND"
-			(at 190.5 87.63 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 190.5 83.82 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 190.5 83.82 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 190.5 83.82 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "ab4fae01-029a-40f1-a64a-5429bcd26974")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "#PWR07")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "env-logger:DS3231_module")
-		(at 215.9 121.92 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "bae7e7e2-ed1a-4140-809b-9855b5b37cfe")
-		(property "Reference" "U3"
-			(at 215.9 109.22 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "DS3231 module (0x68)"
-			(at 215.9 134.62 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 215.9 121.92 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 215.9 121.92 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 215.9 121.92 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "fb135f68-30ec-41ab-9004-dd57e22852b7")
-		)
-		(pin "2"
-			(uuid "53eb215c-7cee-430d-9137-0e6a53eaf65d")
-		)
-		(pin "3"
-			(uuid "7fe9711c-a0e8-49d8-80b7-f8e30572643f")
-		)
-		(pin "4"
-			(uuid "44aa5f5d-a891-4fd1-80ef-191d8ed1757c")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "U3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 198.12 114.3) (xy 190.5 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7db32461-80e7-4799-8ac2-95f92fcba81a")
-	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 190.5 114.3 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "4b3f0356-0716-4c15-bdbc-9f73743746d5")
-		(property "Reference" "#PWR08"
-			(at 190.5 109.22 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "+3V3"
-			(at 190.5 110.49 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 190.5 114.3 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 190.5 114.3 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 190.5 114.3 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "251c14ba-7ba2-4fac-8960-6c527e2e0331")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "#PWR08")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 198.12 119.38) (xy 190.5 119.38)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b5b5d156-19ac-49c9-91d3-f0de7c20caf7")
-	)
-	(label "SCL"
-		(at 190.5 119.38 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "750ca9e1-98ce-4ad9-ad56-456a8d719e34")
-	)
-	(wire
-		(pts
-			(xy 198.12 124.46) (xy 190.5 124.46)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6c810c53-60bd-47b4-8f44-10408b1df222")
-	)
-	(label "SDA"
-		(at 190.5 124.46 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "ef09d14d-cba8-4948-984d-69a30f28b8e6")
-	)
-	(wire
-		(pts
-			(xy 198.12 129.54) (xy 190.5 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a07f77b1-c395-4c99-aaab-a372a1d214a5")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 190.5 129.54 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "770581d6-9c0b-401b-827f-e9f01e498345")
-		(property "Reference" "#PWR09"
-			(at 190.5 134.62 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Value" "GND"
-			(at 190.5 133.35 0)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Footprint" ""
-			(at 190.5 129.54 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Datasheet" ""
-			(at 190.5 129.54 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(property "Description" ""
-			(at 190.5 129.54 0)
-			(hide yes)
-			(effects (font (size 1.27 1.27)))
-		)
-		(pin "1"
-			(uuid "54cfd488-cb70-4449-9a6e-3b87b40edb61")
-		)
-		(instances
-			(project "env-logger"
-				(path "/262bbaa9-9024-461e-bff3-2d552d6a7461"
-					(reference "#PWR09")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(text "Environment Logger - schematic (module level)"
-		(exclude_from_sim no)
-		(at 15.24 12.7 0)
-		(effects
-			(font
-				(size 3.0 3.0)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "7f303b68-3a12-49ea-b7a5-68f9565b597e")
-	)
-	(text "ESP32-S3-DevKitM-1 + BME280 + DS3231 on one I2C bus (400 kHz), 2 status LEDs, 1 button"
-		(exclude_from_sim no)
-		(at 15.24 20.32 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "4e19542d-69c9-4641-8aa0-5342ef27b536")
-	)
-	(text "Notes\n1. I2C pull-ups: no external resistors. The modules already have them\n   (BME280: 10k per line, DS3231: 4.7k per line, about 3.2k in parallel).\n2. I2C addresses: BME280 = 0x76, DS3231 = 0x68. SDA = GPIO8, SCL = GPIO9.\n3. Power: 5V enters via the DevKitM-1 USB connector; the on-board regulator\n   supplies 3V3 to both modules.\n4. UART0 (GPIO43/44) is wired on the DevKitM-1 to its USB-UART bridge;\n   the log is read through the same USB connector.\n5. LED series resistors 220 ohm. Button is active low, internal pull-up\n   is enabled in firmware.\n6. DS3231 pins 32K and SQW are not used."
-		(exclude_from_sim no)
-		(at 15.24 140 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "b176a03d-eda2-4063-8a72-48ac276943ca")
 	)
 	(sheet_instances
 		(path "/"
