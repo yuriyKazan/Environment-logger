@@ -82,3 +82,5 @@ hardware/kicad/*-backups/
 hardware/kicad/_autosave-*
 hardware/kicad/*.kicad_prl
 hardware/kicad/fp-info-cache
+hardware/kicad/.history/
+hardware/kicad/*.lck
