@@ -22,7 +22,7 @@ No analog input: the photoresistor was intentionally dropped, because a temperat
 | Signal | GPIO | Notes |
 |---|---|---|
 | I2C SDA | 8 | 400 kHz, shared by BME280 and DS3231 |
-| I2C SCL | 9 | one 10 kΩ pull-up pair for the whole bus |
+| I2C SCL | 9 | pull-ups are on the modules, no external resistors (see wiring notes) |
 | UART0 TX | 43 | console / log output, 115200 baud |
 | UART0 RX | 44 | default console RX (unused by the application) |
 | LED_OK | 4 | active high, 220 Ω series resistor |
@@ -35,10 +35,11 @@ No analog input: the photoresistor was intentionally dropped, because a temperat
 ESP32-S3                BME280 (0x76)         DS3231 (0x68)
 3V3  ------------------ VCC ----------------- VCC
 GND  ------------------ GND ----------------- GND
-GPIO8 (SDA) ----+------ SDA ----------------- SDA
-GPIO9 (SCL) ----+--+--- SCL ----------------- SCL
-                |  |
-               10k 10k  pull-ups to 3V3 (one pair for the whole bus)
+GPIO8 (SDA) ------------ SDA ----------------- SDA
+GPIO9 (SCL) ------------ SCL ----------------- SCL
+
+No external I2C pull-ups: they are already on the modules
+(BME280: 10 kΩ per line, DS3231: 4.7 kΩ per line).
 
 GPIO4 --[220R]--|>|-- GND   (LED_OK)
 GPIO5 --[220R]--|>|-- GND   (LED_ERR)
@@ -46,6 +47,7 @@ GPIO6 --[BTN]-- GND         (internal pull-up enabled)
 ```
 
 Notes:
-- DS3231 needs a working CR2032. With a dead or missing battery it reports `2000-01-01 00:00:00`; the firmware must validate the timestamp before logging it.
-- Many BME280 / DS3231 breakout boards already carry I2C pull-ups. Check the total parallel resistance; do not stack extra pull-ups blindly.
+- DS3231 needs a working backup battery. With a dead or missing battery it reports `2000-01-01 00:00:00`; the firmware must validate the timestamp before logging it.
+- I2C pull-ups are provided by the modules (BME280 10 kΩ, DS3231 4.7 kΩ per line), giving about 3.2 kΩ per line in parallel, which is suitable for 400 kHz with short wires. Add external 4.7-10 kΩ pull-ups only if a different module set has none; do not stack extra pull-ups blindly. If 400 kHz is unstable, shorten the wires first, then fall back to 100 kHz.
+- ZS-042-style DS3231 modules (recognisable by the AT24C32 EEPROM chip) have a charging circuit (diode plus 200 Ω resistor, marked `201`) intended for a rechargeable LIR2032. Never leave a non-rechargeable CR2032 in a module with this circuit enabled: it is trickle-charged, which can cause leakage or swelling. Either use an LIR2032, or disable the circuit by removing the diode or cutting the trace between the diode and the `201` resistor. This project uses an LIR2032.
 - The KiCad/draw.io schematic is stored in `docs/schematic/` (to be added).
