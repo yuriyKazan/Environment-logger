@@ -76,3 +76,9 @@ Testing/
 
 # Secrets and credentials (DO NOT COMMIT)
 include/secrets.h
+
+# KiCad
+hardware/kicad/*-backups/
+hardware/kicad/_autosave-*
+hardware/kicad/*.kicad_prl
+hardware/kicad/fp-info-cache
