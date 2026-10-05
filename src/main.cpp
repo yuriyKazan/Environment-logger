@@ -11,14 +11,18 @@
 #include "data_types.h"
 #include "ds3231.h"
 #include "esp_timer.h"
+#include "nvs_flash.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "i2c_bus.h"
 #include "i2c_mutex.h"
 #include "led.h"
+#include "mqtt_publisher.h"
+#include "mqtt_task.h"
 #include "sensor_task.h"
 #include "time_source.h"
 #include "uart_log_task.h"
+#include "wifi_manager.h"
 
 static const char *TAG = config::APP_NAME;
 
@@ -30,7 +34,11 @@ static Bme280 g_bme(g_i2c, config::I2C_ADDR_BME280);
 static Ds3231 g_rtc(g_i2c, config::I2C_ADDR_DS3231);
 static TimeSource g_time;
 static Button g_button(config::BUTTON_GPIO);
-static QueueHandle_t g_log_queue;  // Q_LOG: T1 -> T2
+static QueueHandle_t g_log_queue;   // Q_LOG: T1 -> T2
+static QueueHandle_t g_mqtt_queue;  // Q_MQTT: T1 -> T4
+static WifiManager g_wifi;
+static MqttPublisher g_mqtt;
+static MqttTask *g_mqtt_task;  // needs Q_MQTT, created in app_main
 static SensorTask g_sensor_task(g_i2c_mutex, g_bme, g_rtc, g_time);
 static UartLogTask *g_uart_task;  // needs Q_LOG, created in app_main
 
@@ -136,16 +144,29 @@ extern "C" void app_main(void)
 
     // Synchronisation objects, then the tasks (T1 sensor, T2 UART log) and the button.
     g_log_queue = xQueueCreate(config::LOG_QUEUE_LEN, sizeof(LogEntry));
+    g_mqtt_queue = xQueueCreate(config::MQTT_QUEUE_LEN, sizeof(LogEntry));
     g_uart_task = new UartLogTask(g_log_queue);
-    if (g_i2c_mutex.init() != ESP_OK || g_log_queue == nullptr || g_led_ok.init() != ESP_OK ||
-        g_led_err.init() != ESP_OK) {
+    g_mqtt_task = new MqttTask(g_mqtt, g_mqtt_queue);
+    if (g_i2c_mutex.init() != ESP_OK || g_log_queue == nullptr || g_mqtt_queue == nullptr ||
+        g_led_ok.init() != ESP_OK || g_led_err.init() != ESP_OK) {
         ESP_LOGE(TAG, "mutex/queue/LED init failed");
         return;
     }
-    if (g_uart_task->start() != ESP_OK || g_sensor_task.start(g_log_queue) != ESP_OK ||
+    if (g_uart_task->start() != ESP_OK || g_sensor_task.start(g_log_queue, g_mqtt_queue) != ESP_OK ||
         g_button.init(g_sensor_task.isr_queue()) != ESP_OK) {
         ESP_LOGE(TAG, "task or button start failed");
         return;
+    }
+
+    // Network last and best effort: if anything fails here, the UART log keeps running.
+    esp_err_t nvs = nvs_flash_init();
+    if (nvs == ESP_ERR_NVS_NO_FREE_PAGES || nvs == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        nvs_flash_erase();
+        nvs = nvs_flash_init();
+    }
+    if (nvs != ESP_OK || g_mqtt.init() != ESP_OK || g_mqtt_task->start() != ESP_OK ||
+        g_wifi.init(&MqttPublisher::on_wifi_connected, &g_mqtt) != ESP_OK) {
+        ESP_LOGE(TAG, "Wi-Fi/MQTT start failed: continuing with the UART log only");
     }
 
     esp_timer_handle_t hb = nullptr;

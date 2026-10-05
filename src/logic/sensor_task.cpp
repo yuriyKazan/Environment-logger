@@ -17,12 +17,13 @@ SensorTask::SensorTask(I2cMutex &i2c_mutex, Bme280 &bme, Ds3231 &rtc, TimeSource
 {
 }
 
-esp_err_t SensorTask::start(QueueHandle_t log_queue)
+esp_err_t SensorTask::start(QueueHandle_t log_queue, QueueHandle_t mqtt_queue)
 {
-    if (isr_queue_ != nullptr || log_queue == nullptr) {
+    if (isr_queue_ != nullptr || log_queue == nullptr || mqtt_queue == nullptr) {
         return ESP_ERR_INVALID_STATE;
     }
     log_queue_ = log_queue;
+    mqtt_queue_ = mqtt_queue;
     isr_queue_ = xQueueCreate(config::ISR_QUEUE_LEN, sizeof(IsrEvent));
     if (isr_queue_ == nullptr) {
         return ESP_ERR_NO_MEM;
@@ -181,6 +182,17 @@ void SensorTask::publish(const LogEntry &entry)
     if (xQueueSend(log_queue_, &entry, 0) != pdTRUE) {
         dropped_log_++;
         ESP_LOGW(TAG, "Q_LOG full, entry dropped (total %u)", (unsigned)dropped_log_);
+    }
+
+    // Q_MQTT is best effort: when T4 is slow or offline, drop the OLDEST entry so the broker
+    // gets the freshest data. T1 is the only producer, so removing one item makes room.
+    if (xQueueSend(mqtt_queue_, &entry, 0) != pdTRUE) {
+        LogEntry oldest;
+        xQueueReceive(mqtt_queue_, &oldest, 0);
+        dropped_mqtt_++;
+        if (xQueueSend(mqtt_queue_, &entry, 0) != pdTRUE) {
+            ESP_LOGW(TAG, "Q_MQTT still full, entry dropped");
+        }
     }
 }
 

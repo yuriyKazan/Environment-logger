@@ -26,12 +26,13 @@ class SensorTask {
 public:
     SensorTask(I2cMutex &i2c_mutex, Bme280 &bme, Ds3231 &rtc, TimeSource &time_source);
 
-    // Create Q_ISR, the timers and the task; results go to `log_queue` (Q_LOG).
-    // Call button.init(isr_queue()) afterwards.
-    esp_err_t start(QueueHandle_t log_queue);
+    // Create Q_ISR, the timers and the task; every LogEntry goes to `log_queue` (Q_LOG, T2) and
+    // `mqtt_queue` (Q_MQTT, T4). Call button.init(isr_queue()) afterwards.
+    esp_err_t start(QueueHandle_t log_queue, QueueHandle_t mqtt_queue);
 
     QueueHandle_t isr_queue() const { return isr_queue_; }
     uint32_t dropped_log_entries() const { return dropped_log_; }
+    uint32_t dropped_mqtt_entries() const { return dropped_mqtt_; }
 
 private:
     enum class State : uint8_t { Idle, WaitConversion };
@@ -53,6 +54,7 @@ private:
     Ds3231 &rtc_;
     TimeSource &time_;
     QueueHandle_t log_queue_ = nullptr;
+    QueueHandle_t mqtt_queue_ = nullptr;
     QueueHandle_t isr_queue_ = nullptr;
     esp_timer_handle_t tick_timer_ = nullptr;
     esp_timer_handle_t conv_timer_ = nullptr;
@@ -63,5 +65,6 @@ private:
     Ema ema_p_;
     uint32_t err_cnt_ = 0;
     uint32_t dropped_log_ = 0;
+    uint32_t dropped_mqtt_ = 0;
     uint32_t presses_ = 0;
 };
