@@ -1,0 +1,43 @@
+Phase 3.2 RTC validity log (ESP32-S3-DevKitM-1, ESP-IDF 5.5.3)
+Captured with: pio device monitor (COM4, 115200 8-N-1). Boot ROM and bootloader lines are omitted.
+
+=== Run 1: DS3231 never had its time set (oscillator-stop flag set) ===
+Result: the firmware detects the invalid time and flags it as untrusted instead of logging a made-up time.
+
+12:44:35.867 > I (335) env-logger:   DS3231 seconds register 0x02: OK
+12:44:35.867 > I (345) bme280: ready at 0x76 (chip ID 0x60, forced mode, oversampling x1)
+12:44:35.867 > I (345) ds3231: ready at 0x68 (OSF=1)
+12:44:35.867 > I (345) env-logger: RTC 2000-01-01 01:59:02: oscillator stopped
+12:44:35.867 > W (355) time_source: RTC time not valid (oscillator stopped): using the internal clock, time is NOT trusted
+12:44:35.867 > I (365) env-logger: LED_OK blinks every 500 ms; press the button to toggle LED_ERR
+12:44:35.867 > I (375) main_task: Returned from app_main()
+
+=== Run 2: time set from the build time, module powered off and on again ===
+Result: the backup battery (LIR2032) kept the clock; the system clock is set from the RTC and timestamps are trusted.
+
+12:59:47.744 > I (285) env-logger: boot, IDF 5.5.3
+12:59:47.770 > I (315) env-logger: I2C scan (probe @ 100 kHz): 3 device(s)
+12:59:47.771 > I (315) env-logger:   0x50 (AT24C32 EEPROM on DS3231 module)
+12:59:47.776 > I (315) env-logger:   0x68 (DS3231)
+12:59:47.778 > I (315) env-logger:   0x76 (BME280)
+12:59:47.788 > I (315) env-logger: 0x76 BME280: OK
+12:59:47.788 > I (325) env-logger: 0x68 DS3231: OK
+12:59:47.794 > I (325) env-logger: register reads @ 400000 Hz:
+12:59:47.799 > I (335) env-logger:   BME280 chip ID 0x60: OK
+12:59:47.799 > I (335) env-logger:   DS3231 seconds register 0x33: OK
+12:59:47.805 > I (345) bme280: ready at 0x76 (chip ID 0x60, forced mode, oversampling x1)
+12:59:47.810 > I (345) ds3231: ready at 0x68 (OSF=0)
+12:59:47.812 > I (345) env-logger: RTC 2026-10-05 12:59:33: valid
+12:59:47.821 > I (355) time_source: system clock set from RTC: 2026-10-05 12:59:33
+12:59:47.827 > I (355) env-logger: LED_OK blinks every 500 ms; press the button to toggle LED_ERR
+12:59:47.830 > I (365) main_task: Returned from app_main()
+12:59:52.818 > I (5375) env-logger: [12:59:38] T=23.72 C  H=40.6 %  P=983.7 hPa
+12:59:57.828 > I (10375) env-logger: [12:59:43] T=23.72 C  H=40.6 %  P=983.7 hPa
+13:00:02.827 > I (15375) env-logger: [12:59:48] T=23.72 C  H=40.6 %  P=983.7 hPa
+13:00:07.826 > I (20375) env-logger: [12:59:53] T=23.71 C  H=40.6 %  P=983.7 hPa
+13:00:12.826 > I (25375) env-logger: [12:59:58] T=23.71 C  H=40.6 %  P=983.7 hPa
+13:00:17.825 > I (30375) env-logger: [13:00:03] T=23.71 C  H=40.7 %  P=983.7 hPa
+
+Notes:
+- The RTC lags the PC clock by about 14 s: it was set from the firmware build time, and the upload took a few seconds.
+- Run 2 was captured with RTC_SET_FROM_BUILD_TIME_IF_INVALID = false.
