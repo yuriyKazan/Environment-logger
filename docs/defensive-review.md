@@ -48,7 +48,7 @@ Worst case between two watchdog feeds of T1: the queue wait (1 s) plus the longe
 |---|---|---|
 | I2C bus | T1 (measurements), T3 (bus reset); before the tasks start, `app_main` | one mutex for the whole bus; a single lock, so there is no lock-ordering problem |
 | `ErrorCounter` | T1 increments, T3 resets | `std::atomic`, saturating |
-| Queues (Q_ISR/T1, Q_LOG, Q_MQTT, T3 queue) | producers and one consumer each | FreeRTOS queues; the button ISR uses `xQueueSendFromISR` |
+| Queues (T1 queue, T3 queue, Q_LOG, Q_MQTT) | producers and one consumer each | FreeRTOS queues; the button ISR uses `xQueueSendFromISR` |
 | LEDs | T3 only | single owner |
 | `TimeSource` state | T1 only after start | single owner |
 | Wi-Fi and MQTT "connected" flags | event loop writes, T4 reads | `std::atomic<bool>` |

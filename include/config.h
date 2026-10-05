@@ -69,7 +69,7 @@ inline constexpr uint32_t DIAG_T1_STATS_CYCLES = 12;        // T1 logs its timin
 // Fault injection for the queue overflow test: when enabled, T2 stops reading Q_LOG for a while after
 // FAULT_STALL_UART_AFTER_ENTRIES entries, so the queue fills and the "Q_LOG full" policy can be observed.
 // T2 keeps feeding the watchdog while stalled. Must be false in normal use.
-inline constexpr bool FAULT_STALL_UART = false;
+inline constexpr bool FAULT_STALL_UART = true;
 inline constexpr uint32_t FAULT_STALL_UART_AFTER_ENTRIES = 3;
 inline constexpr uint32_t FAULT_STALL_UART_MS = 90 * 1000;
 
@@ -83,7 +83,7 @@ inline constexpr int BUTTON_PRESSED_LEVEL = 1;
 inline constexpr int64_t BUTTON_DEBOUNCE_US = 50 * 1000;    // edges closer than this are ignored
 
 // ---- Queues, tasks, mutex ----
-inline constexpr size_t ISR_QUEUE_LEN = 8;                  // Q_ISR: timer/button events -> T1
+inline constexpr size_t ISR_QUEUE_LEN = 8;                  // T1 queue: timer events and answers from T3
 inline constexpr size_t LOG_QUEUE_LEN = 8;                  // Q_LOG: T1 -> T2
 inline constexpr size_t ERR_QUEUE_LEN = 8;                  // T3 queue: errors and button events
 inline constexpr size_t MQTT_QUEUE_LEN = 4;                 // Q_MQTT: T1 -> T4 (drops the oldest when full)
