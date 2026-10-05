@@ -25,3 +25,6 @@ The README merges all section lists from the course documents instead of using t
 
 ## 8. MQTT telemetry (Task 4) and web page are extensions
 MQTT is a mandatory best-effort channel alongside UART (reusing `module5`); the web page is optional. Neither counts toward the I2C+WDT reliability criterion.
+
+## 9. Task watchdog: 10 s, resets the chip, application tasks only
+I chose a 10 s task WDT timeout with `CONFIG_ESP_TASK_WDT_PANIC=y`, fed about once per second by T1, T2 and T3 from their timed queue waits, because the timeout must be much longer than the longest legal pause in the system but short enough to catch a real hang, and it must be independent of the 5 s measurement interval (the course documents set both to 5 s, so a normal cycle could trigger a reset). Without `PANIC` a timeout only prints a warning and the chip never resets, so `ESP_RST_TASK_WDT` would never be seen. The idle tasks are not monitored, so a timeout always points at one of T1-T3; T4 (network) is deliberately not subscribed, so a bad Wi-Fi link can never reset the logger. The alternative, feeding the WDT from T3 based on heartbeats of the other tasks, has a single feed point but hides which task hung. The settings live in `sdkconfig.defaults`; the generated `sdkconfig.<env>` is not tracked.
