@@ -34,4 +34,16 @@ inline constexpr uint8_t I2C_SCAN_FIRST = 0x08;
 inline constexpr uint8_t I2C_SCAN_LAST = 0x77;
 inline constexpr size_t I2C_SCAN_MAX_FOUND = 16;
 
+// ---- LEDs and button ----
+inline constexpr gpio_num_t LED_OK_GPIO = GPIO_NUM_4;
+inline constexpr gpio_num_t LED_ERR_GPIO = GPIO_NUM_5;
+inline constexpr gpio_num_t BUTTON_GPIO = GPIO_NUM_6;       // active low, internal pull-up
+inline constexpr int64_t BUTTON_DEBOUNCE_US = 50 * 1000;    // edges closer than this are ignored
+inline constexpr uint32_t HEARTBEAT_LED_PERIOD_MS = 500;    // bring-up: LED_OK toggle period
+
+// ---- Queues and tasks ----
+inline constexpr size_t ISR_QUEUE_LEN = 8;                  // Q_ISR: timer/button ISR -> task
+inline constexpr uint32_t BRINGUP_TASK_STACK = 3072;
+inline constexpr unsigned BRINGUP_TASK_PRIO = 5;
+
 }  // namespace config
