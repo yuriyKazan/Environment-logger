@@ -12,6 +12,7 @@
 #include "ds3231.h"
 #include "esp_timer.h"
 #include "nvs_flash.h"
+#include "reset_reason.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "i2c_bus.h"
@@ -96,6 +97,7 @@ static void heartbeat_cb(void *)
 extern "C" void app_main(void)
 {
     ESP_LOGI(TAG, "boot, IDF %s", esp_get_idf_version());
+    log_reset_reason();
 
     if (g_i2c.init() != ESP_OK) {
         ESP_LOGE(TAG, "I2C bus init failed");
