@@ -14,7 +14,7 @@ static const char *TAG = "wifi";
 static const char *reason_name(uint8_t reason)
 {
     switch (reason) {
-    case WIFI_REASON_NO_AP_FOUND:             return "AP not found (wrong SSID or a 5 GHz network: the ESP32-S3 is 2.4 GHz only)";
+    case WIFI_REASON_NO_AP_FOUND:             return "AP not found (switched off, out of range, wrong SSID, or a 5 GHz network: the ESP32-S3 is 2.4 GHz only)";
     case WIFI_REASON_AUTH_FAIL:               return "authentication failed (wrong password?)";
     case WIFI_REASON_4WAY_HANDSHAKE_TIMEOUT:  return "4-way handshake timeout (wrong password?)";
     case WIFI_REASON_HANDSHAKE_TIMEOUT:       return "handshake timeout (wrong password?)";
