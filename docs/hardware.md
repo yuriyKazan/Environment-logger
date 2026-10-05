@@ -11,7 +11,7 @@ Target: ESP32-S3 (`esp32-s3-devkitm-1`), ESP-IDF 5.5.3.
 | UART0 | Formatted log output | UART | 115200 8N1 |
 | LED_OK | System healthy indicator | GPIO out | via 220 Ω |
 | LED_ERR | Error / recovery indicator | GPIO out | via 220 Ω |
-| Button | Manual event (e.g. force measurement / clear error counter) | GPIO in + interrupt | pull-up, active low |
+| Button | Short press: clear the error counter. Long press (3 s): watchdog test | GPIO in + interrupt | 3-pin module (VCC, GND, OUT) with an on-board pull-down, pressed = high |
 | Timer | Measurement tick | `esp_timer` / `gptimer` | 5 s period |
 | Task WDT | Hang detection | `esp_task_wdt` | see [architecture](architecture.md) |
 
@@ -27,7 +27,7 @@ No analog input: the photoresistor was intentionally dropped, because a temperat
 | UART0 RX | 44 | default console RX (unused by the application) |
 | LED_OK | 4 | active high, 220 Ω series resistor |
 | LED_ERR | 5 | active high, 220 Ω series resistor |
-| Button | 6 | internal pull-up, falling-edge interrupt |
+| Button | 6 | module OUT pin; high while pressed, internal pull-down, any-edge interrupt with quiet-time debounce |
 
 ## Wiring
 
@@ -43,7 +43,7 @@ No external I2C pull-ups: they are already on the modules
 
 GPIO4 --[220R]--|>|-- GND   (LED_OK)
 GPIO5 --[220R]--|>|-- GND   (LED_ERR)
-GPIO6 --[BTN]-- GND         (internal pull-up enabled)
+GPIO6 ------------------ OUT  (button module: VCC to 3V3, GND to GND, pressed = high)
 ```
 
 Notes:
