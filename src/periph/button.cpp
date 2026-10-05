@@ -17,7 +17,7 @@ esp_err_t Button::init(QueueHandle_t queue)
     cfg.mode = GPIO_MODE_INPUT;
     cfg.pull_up_en = GPIO_PULLUP_ENABLE;
     cfg.pull_down_en = GPIO_PULLDOWN_DISABLE;
-    cfg.intr_type = GPIO_INTR_NEGEDGE;
+    cfg.intr_type = GPIO_INTR_ANYEDGE;  // both edges: release bounce must restart the quiet time
 
     esp_err_t err = gpio_config(&cfg);
     if (err != ESP_OK) {
@@ -35,10 +35,18 @@ void IRAM_ATTR Button::isr(void *arg)
 {
     auto *self = static_cast<Button *>(arg);
     const int64_t now = esp_timer_get_time();
-    if (now - self->last_accepted_us_ < config::BUTTON_DEBOUNCE_US) {
-        return;  // contact bounce
+
+    // Quiet-time debounce: every edge (press, release, bounce) restarts the timer. An event
+    // is produced only if the line was quiet for BUTTON_DEBOUNCE_US before this edge, so
+    // bounce after a press and bounce after a release are both ignored.
+    const int64_t quiet_us = now - self->last_edge_us_;
+    self->last_edge_us_ = now;
+    if (quiet_us < config::BUTTON_DEBOUNCE_US) {
+        return;
     }
-    self->last_accepted_us_ = now;
+    if (gpio_get_level(self->pin_) != 0) {
+        return;  // line is high: this is a release, not a press
+    }
 
     const IsrEvent ev = {IsrEventType::Button, now};
     BaseType_t woken = pdFALSE;
