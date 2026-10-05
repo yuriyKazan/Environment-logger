@@ -34,6 +34,12 @@ inline constexpr uint8_t I2C_SCAN_FIRST = 0x08;
 inline constexpr uint8_t I2C_SCAN_LAST = 0x77;
 inline constexpr size_t I2C_SCAN_MAX_FOUND = 16;
 
+// ---- BME280 measurement ----
+// Datasheet t_measure,max for T/P/H oversampling x1: 1.25 + 2.3 + (2.3 + 0.575) + (2.3 + 0.575) = 9.3 ms;
+// rounded up with margin. The wait is a one-shot timer, never a blocking delay.
+inline constexpr uint64_t BME280_CONVERSION_US = 10 * 1000;
+inline constexpr uint32_t MEASURE_INTERVAL_MS = 5000;   // time between measurements
+
 // ---- LEDs and button ----
 inline constexpr gpio_num_t LED_OK_GPIO = GPIO_NUM_4;
 inline constexpr gpio_num_t LED_ERR_GPIO = GPIO_NUM_5;
