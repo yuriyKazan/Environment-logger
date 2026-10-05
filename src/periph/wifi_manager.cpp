@@ -10,6 +10,22 @@
 
 static const char *TAG = "wifi";
 
+// Short names for the disconnect reasons that matter when a connection never comes up.
+static const char *reason_name(uint8_t reason)
+{
+    switch (reason) {
+    case WIFI_REASON_NO_AP_FOUND:             return "AP not found (wrong SSID or a 5 GHz network: the ESP32-S3 is 2.4 GHz only)";
+    case WIFI_REASON_AUTH_FAIL:               return "authentication failed (wrong password?)";
+    case WIFI_REASON_4WAY_HANDSHAKE_TIMEOUT:  return "4-way handshake timeout (wrong password?)";
+    case WIFI_REASON_HANDSHAKE_TIMEOUT:       return "handshake timeout (wrong password?)";
+    case WIFI_REASON_ASSOC_FAIL:              return "association failed";
+    case WIFI_REASON_CONNECTION_FAIL:         return "connection failed";
+    case WIFI_REASON_BEACON_TIMEOUT:          return "beacon timeout (signal lost)";
+    case WIFI_REASON_ASSOC_LEAVE:             return "left by request";
+    default:                                  return "other";
+    }
+}
+
 esp_err_t WifiManager::init(ConnectedCb on_got_ip, void *arg)
 {
     on_got_ip_ = on_got_ip;
@@ -75,7 +91,7 @@ void WifiManager::event_handler(void *arg, esp_event_base_t base, int32_t id, vo
             esp_wifi_connect();
             break;
         case WIFI_EVENT_STA_DISCONNECTED:
-            self->on_disconnected();
+            self->on_disconnected(static_cast<const wifi_event_sta_disconnected_t *>(data)->reason);
             break;
         default:
             break;
@@ -92,15 +108,17 @@ void WifiManager::event_handler(void *arg, esp_event_base_t base, int32_t id, vo
     }
 }
 
-void WifiManager::on_disconnected()
+void WifiManager::on_disconnected(uint8_t reason)
 {
     connected_ = false;
     if (fast_retries_ < config::WIFI_FAST_RETRIES) {
         fast_retries_++;
-        ESP_LOGW(TAG, "disconnected, retry %u/%u", (unsigned)fast_retries_, (unsigned)config::WIFI_FAST_RETRIES);
+        ESP_LOGW(TAG, "disconnected, reason %u: %s; retry %u/%u", (unsigned)reason, reason_name(reason),
+                 (unsigned)fast_retries_, (unsigned)config::WIFI_FAST_RETRIES);
         esp_wifi_connect();
     } else if (!esp_timer_is_active(retry_timer_)) {
-        ESP_LOGW(TAG, "still offline, next attempt in %u s", (unsigned)(config::WIFI_SLOW_RETRY_MS / 1000));
+        ESP_LOGW(TAG, "still offline (reason %u: %s), next attempt in %u s", (unsigned)reason, reason_name(reason),
+                 (unsigned)(config::WIFI_SLOW_RETRY_MS / 1000));
         esp_timer_start_once(retry_timer_, (uint64_t)config::WIFI_SLOW_RETRY_MS * 1000);
     }
 }

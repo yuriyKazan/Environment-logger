@@ -27,7 +27,7 @@ public:
 private:
     static void event_handler(void *arg, esp_event_base_t base, int32_t id, void *data);
     static void retry_timer_cb(void *arg);
-    void on_disconnected();
+    void on_disconnected(uint8_t reason);
 
     volatile bool connected_ = false;
     uint8_t fast_retries_ = 0;
