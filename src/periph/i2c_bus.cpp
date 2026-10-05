@@ -35,6 +35,18 @@ esp_err_t I2cBus::init()
     return err;
 }
 
+esp_err_t I2cBus::reset()
+{
+    if (bus_ == nullptr) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    const esp_err_t err = i2c_master_bus_reset(bus_);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "i2c_master_bus_reset failed: %s", esp_err_to_name(err));
+    }
+    return err;
+}
+
 esp_err_t I2cBus::probe(uint8_t addr) const
 {
     if (bus_ == nullptr) {

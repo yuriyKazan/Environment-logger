@@ -27,6 +27,10 @@ public:
     // `found`; *count receives the total number of devices that answered.
     esp_err_t scan(uint8_t *found, size_t max, size_t *count) const;
 
+    // Hardware reset of the master and release of a stuck bus (SCL pulses until a slave lets go of SDA).
+    // Device handles stay valid. The caller must hold the I2C bus mutex.
+    esp_err_t reset();
+
     // Read `len` bytes starting at register `reg` at config::I2C_FREQ_HZ.
     // Bring-up helper: creates a short-lived device handle per call.
     esp_err_t read_reg(uint8_t addr, uint8_t reg, uint8_t *buf, size_t len) const;
