@@ -4,6 +4,7 @@
 #include "esp_log.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
+#include "sensor_validation.h"
 #include "watchdog.h"
 
 static const char *TAG = "T1";
@@ -164,6 +165,15 @@ void SensorTask::on_conversion_done()
     }
     if (bme_err != ESP_OK) {
         attempt_failed(bme_err, "BME280 read");
+        return;
+    }
+    // A well-formed but impossible sample (glitch, failed compensation) must not reach the filter:
+    // it counts as a failed attempt, like a bus error.
+    const SampleStatus status = validate_sample(sample.temp_c, sample.hum_pct, sample.press_hpa);
+    if (status != SampleStatus::Ok) {
+        ESP_LOGW(TAG, "BME280 sample rejected: %s (T=%.1f H=%.1f P=%.1f)", sample_status_name(status),
+                 (double)sample.temp_c, (double)sample.hum_pct, (double)sample.press_hpa);
+        attempt_failed(ESP_ERR_INVALID_RESPONSE, "BME280 data");
         return;
     }
 
