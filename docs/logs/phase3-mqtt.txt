@@ -1,0 +1,41 @@
+Phase 3.7 Wi-Fi + MQTT log (ESP32-S3-DevKitM-1, ESP-IDF 5.5.3)
+Firmware: T1 fans out each LogEntry to Q_LOG (T2, UART) and Q_MQTT (T4, MQTT publish).
+Private data (SSID, IP address, MAC addresses) is replaced with <redacted> placeholders.
+
+=== 1. Station connects and the MQTT client starts (UART excerpt) ===
+I (609) wifi: connecting to SSID "<ssid>"
+I (609) env-logger: running: one log line every 5000 ms
+I (819) wifi:connected with <ssid>, aid = 4, channel 6, BW20, bssid = <mac>
+I (819) wifi:security: WPA2-PSK, phy: bgn, rssi: -59
+I (1859) wifi: got IP <ip>
+I (1859) mqtt: connecting to mqtt://broker.hivemq.com
+[14:51:05] T:24.6 H:40% P:983 ERR:0
+
+Note: a first attempt with the 5 GHz network of the same router never connected (five quick retries, then "still offline"),
+because the ESP32-S3 supports 2.4 GHz only. The UART log kept printing every 5 s during those failed attempts.
+
+=== 2. Messages received by an independent client (HiveMQ WebSocket client, subscribed to envlogger/ykazan/#) ===
+2026-10-05 14:57:39  envlogger/ykazan/pres  982.9
+2026-10-05 14:57:39  envlogger/ykazan/err   0
+2026-10-05 14:57:39  envlogger/ykazan/hum   39.8
+2026-10-05 14:57:39  envlogger/ykazan/temp  24.61
+2026-10-05 14:57:34  envlogger/ykazan/pres  982.9
+2026-10-05 14:57:34  envlogger/ykazan/err   0
+2026-10-05 14:57:34  envlogger/ykazan/hum   39.9
+2026-10-05 14:57:34  envlogger/ykazan/temp  24.61
+2026-10-05 14:57:29  envlogger/ykazan/pres  982.9
+2026-10-05 14:57:29  envlogger/ykazan/err   0
+2026-10-05 14:57:29  envlogger/ykazan/hum   39.9
+2026-10-05 14:57:29  envlogger/ykazan/temp  24.61
+2026-10-05 14:57:24  envlogger/ykazan/pres  982.9
+2026-10-05 14:57:24  envlogger/ykazan/err   0
+2026-10-05 14:57:24  envlogger/ykazan/hum   39.9
+2026-10-05 14:57:24  envlogger/ykazan/temp  24.61
+
+All four topics arrive every 5 s and match the UART line (T:24.6 H:40% P:983 ERR:0).
+
+=== 3. Reconnect test ===
+The Wi-Fi router was switched off for about one minute. Publication resumed on its own about two minutes after the
+router was switched off (a one-minute outage plus the 30 s slow retry cycle). Reported by the author.
+Not captured in this file: the UART log during the outage, so "UART keeps printing every 5 s while offline" is
+supported only by the first-connection failure in section 1, not by a dedicated capture of this test.
