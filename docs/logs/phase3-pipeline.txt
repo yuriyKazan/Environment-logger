@@ -1,0 +1,44 @@
+Phase 3.4 pipeline log (ESP32-S3-DevKitM-1, ESP-IDF 5.5.3)
+Firmware: T1 (measurement FSM, EMA, LogEntry) -> Q_LOG -> T2 (UART log line), I2C mutex, DS3231 timestamps.
+Captured with: pio device monitor (COM4, 115200 8-N-1). Boot ROM and bootloader lines are omitted.
+This excerpt covers about 100 s. The run was left going for more than 5 minutes without errors
+(observed by the author: LED_OK kept blinking, no error lines, ERR stayed 0).
+
+14:19:07.085 > I (288) env-logger: boot, IDF 5.5.3
+14:19:07.085 > W (288) i2c.master: Please check pull-up resistances whether be connected properly. Otherwise unexpected behavior would happen. For more detailed information, please read docs
+14:19:07.085 > I (318) env-logger: I2C scan (probe @ 100 kHz): 3 device(s)
+14:19:07.085 > I (318) env-logger:   0x50 (AT24C32 EEPROM on DS3231 module)
+14:19:07.085 > I (318) env-logger:   0x68 (DS3231)
+14:19:07.085 > I (318) env-logger:   0x76 (BME280)
+14:19:07.085 > I (328) bme280: ready at 0x76 (chip ID 0x60, forced mode, oversampling x1)
+14:19:07.085 > I (328) ds3231: ready at 0x68 (OSF=0)
+14:19:07.085 > I (338) env-logger: RTC 2026-10-05 14:18:49: valid
+14:19:07.085 > I (338) time_source: system clock set from RTC: 2026-10-05 14:18:49
+14:19:07.085 > I (348) env-logger: running: one log line every 5000 ms
+14:19:07.085 > I (348) main_task: Returned from app_main()
+14:19:08.125 > [14:18:54] T:24.3 H:40% P:983 ERR:0
+14:19:13.124 > [14:18:59] T:24.3 H:40% P:983 ERR:0
+14:19:18.123 > [14:19:04] T:24.3 H:40% P:983 ERR:0
+14:19:23.123 > [14:19:09] T:24.3 H:40% P:983 ERR:0
+14:19:28.122 > [14:19:14] T:24.3 H:40% P:983 ERR:0
+14:19:33.121 > [14:19:19] T:24.3 H:40% P:983 ERR:0
+14:19:38.121 > [14:19:24] T:24.3 H:40% P:983 ERR:0
+14:19:43.121 > [14:19:29] T:24.3 H:40% P:983 ERR:0
+14:19:48.120 > [14:19:34] T:24.3 H:40% P:983 ERR:0
+14:19:53.120 > [14:19:39] T:24.3 H:40% P:983 ERR:0
+14:19:58.120 > [14:19:44] T:24.3 H:40% P:983 ERR:0
+14:20:03.118 > [14:19:49] T:24.3 H:40% P:983 ERR:0
+14:20:08.118 > [14:19:54] T:24.3 H:40% P:983 ERR:0
+14:20:13.118 > [14:19:59] T:24.3 H:40% P:983 ERR:0
+14:20:18.117 > [14:20:04] T:24.3 H:40% P:983 ERR:0
+14:20:23.116 > [14:20:09] T:24.3 H:40% P:983 ERR:0
+14:20:28.116 > [14:20:14] T:24.3 H:40% P:983 ERR:0
+14:20:33.115 > [14:20:19] T:24.3 H:40% P:983 ERR:0
+14:20:38.114 > [14:20:24] T:24.3 H:40% P:983 ERR:0
+14:20:43.114 > [14:20:29] T:24.3 H:40% P:983 ERR:0
+14:20:48.114 > [14:20:34] T:24.3 H:40% P:983 ERR:0
+
+Notes:
+- Line format: [HH:MM:SS] T:<C> H:<%> P:<hPa> ERR:<count>; no !TIME or !SENS markers, so the RTC time and the sensor data are valid.
+- The monitor timestamps of the boot lines are identical because the monitor received them as one chunk; use the measurement lines for timing.
+- The RTC runs about 14 s behind the PC clock because it was set from the firmware build time.
