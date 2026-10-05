@@ -343,4 +343,81 @@
 		)
 		(embedded_fonts no)
 	)
+	(symbol "Button_module"
+		(pin_names
+			(offset 1.016)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "U"
+			(at 0 10.16 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Value" "Button_module"
+			(at 0 -10.16 0)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(hide yes)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(hide yes)
+			(effects (font (size 1.27 1.27)))
+		)
+		(property "Description" "Push-button module, 3 pins (VCC, GND, OUT), on-board pull-down: OUT is low at rest and high while pressed"
+			(at 0 0 0)
+			(hide yes)
+			(effects (font (size 1.27 1.27)))
+		)
+		(symbol "Button_module_0_1"
+			(rectangle
+				(start -12.7 7.62)
+				(end 12.7 -7.62)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+		)
+		(symbol "Button_module_1_1"
+			(pin power_in line
+				(at -17.78 5.08 0)
+				(length 5.08)
+				(name "VCC"
+					(effects (font (size 1.27 1.27)))
+				)
+				(number "1"
+					(effects (font (size 1.27 1.27)))
+				)
+			)
+			(pin output line
+				(at -17.78 0 0)
+				(length 5.08)
+				(name "OUT"
+					(effects (font (size 1.27 1.27)))
+				)
+				(number "2"
+					(effects (font (size 1.27 1.27)))
+				)
+			)
+			(pin power_in line
+				(at -17.78 -5.08 0)
+				(length 5.08)
+				(name "GND"
+					(effects (font (size 1.27 1.27)))
+				)
+				(number "3"
+					(effects (font (size 1.27 1.27)))
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
 )
