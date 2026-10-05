@@ -1,0 +1,33 @@
+Phase 6.2 queue overflow test (fault injection) (ESP32-S3-DevKitM-1, ESP-IDF 5.5.3)
+Firmware: config::FAULT_STALL_UART = true. After 3 entries T2 stops reading Q_LOG for 90 s (it keeps feeding the watchdog),
+so the 8-place queue fills and the overflow policy can be observed.
+Captured with: pio device monitor (COM4, 115200 8-N-1). The start of the run and the lines printed after the stall are
+excerpts (the tail of the buffered output is cut).
+
+21:47:05.235 > [21:46:53] T:21.9 H:44% P:982 ERR:0
+21:47:10.236 > W (15471) T2: FAULT INJECTION: not reading Q_LOG for 90 s
+   (no UART measurement lines for the next 90 s)
+21:47:55.216 > I (60461) diag: uptime 60 s, heap free 235272 B (lowest 229256 B), CPU load 0.9 % (2 cores averaged), 15 tasks
+21:47:55.244 > W (60471) T1: Q_LOG full, entry dropped (total 1)
+21:47:55.249 > I (60481) T1: timing over 12 cycles, us min/avg/max: I2C start 521/523/528, I2C read 1200/1225/1454, cycle 11874/12692/21599
+21:48:00.229 > W (65471) T1: Q_LOG full, entry dropped (total 2)
+21:48:05.228 > W (70471) T1: Q_LOG full, entry dropped (total 3)
+21:48:10.227 > W (75471) T1: Q_LOG full, entry dropped (total 4)
+21:48:15.227 > W (80471) T1: Q_LOG full, entry dropped (total 5)
+21:48:20.227 > W (85471) T1: Q_LOG full, entry dropped (total 6)
+21:48:25.226 > W (90471) T1: Q_LOG full, entry dropped (total 7)
+21:48:30.225 > W (95471) T1: Q_LOG full, entry dropped (total 8)
+21:48:35.225 > W (100471) T1: Q_LOG full, entry dropped (total 9)
+21:48:40.225 > W (105471) T1: Q_LOG full, entry dropped (total 10)
+21:48:41.219 > W (106471) T2: FAULT INJECTION: reading Q_LOG again
+21:48:41.219 > [21:46:58] T:21.9 H:44% P:982 ERR:0
+21:48:41.224 > [21:47:03] T:21.9 H:44% P:982 ERR:0
+   (the remaining buffered entries follow)
+
+What the log shows:
+- Policy of Q_LOG: when it is full, the NEWEST entry is dropped and counted ("Q_LOG full, entry dropped (total N)"); T1 is
+  never blocked: the warnings keep coming every 5 s and the measurement cycle keeps its timing.
+- After the stall T2 first prints the OLDEST buffered entries (the first one is time-stamped 21:46:58, i.e. from before the
+  queue filled up); the dropped ones are lost, as intended.
+- The watchdog did not fire: T2 kept feeding it while it was stalled, so the test shows the queue policy and not a hang.
+- The first drop appears at 60 s: 3 entries were read, then the queue held 8 and the next one found it full.

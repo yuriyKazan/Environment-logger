@@ -1,0 +1,32 @@
+Phase 6.3 diagnostics log (ESP32-S3-DevKitM-1, ESP-IDF 5.5.3)
+Firmware: normal run with the diagnostics task enabled (snapshot every 60 s, T1 timing every 12 cycles).
+Captured with: pio device monitor (COM4, 115200 8-N-1). The board had been running for 4627 s (77 minutes) without a reset
+when this snapshot was taken (the "uptime" value counts from the last boot).
+
+21:36:16.821 > [21:36:05] T:21.5 H:44% P:982 ERR:0
+21:36:21.823 > I (4620471) T1: timing over 12 cycles, us min/avg/max: I2C start 529/534/540, I2C read 1204/1230/1343, cycle 11910/11969/12384
+21:36:21.832 > [21:36:10] T:21.5 H:44% P:982 ERR:0
+21:36:26.821 > [21:36:15] T:21.5 H:44% P:982 ERR:0
+21:36:29.437 > I (4628091) diag: uptime 4627 s, heap free 234844 B (lowest 226628 B), CPU load 0.7 % (2 cores averaged), 15 tasks
+21:36:29.443 > I (4628091) diag:   diag             X prio  1  stack free  1760 B  cpu   0.2 %
+21:36:29.454 > I (4628091) diag:   IDLE1            R prio  0  stack free   812 B  cpu  99.9 %
+21:36:29.460 > I (4628101) diag:   IDLE0            R prio  0  stack free   740 B  cpu  98.7 %
+21:36:29.465 > I (4628111) diag:   T3_supervisor    B prio  6  stack free  3156 B  cpu   0.0 %
+21:36:29.471 > I (4628111) diag:   T1_sensor        B prio  5  stack free  1828 B  cpu   0.0 %
+21:36:29.482 > I (4628121) diag:   T2_uart          B prio  4  stack free  1876 B  cpu   0.0 %
+21:36:29.487 > I (4628131) diag:   T4_mqtt          B prio  3  stack free  2000 B  cpu   0.1 %
+21:36:29.493 > I (4628141) diag:   mqtt_task        B prio  5  stack free  3940 B  cpu   0.1 %
+21:36:29.515 > I (4628141) diag:   tiT              B prio 18  stack free  1752 B  cpu   0.2 %
+21:36:29.515 > I (4628151) diag:   ipc0             S prio  1  stack free   396 B  cpu   0.0 %
+21:36:29.515 > I (4628161) diag:   ipc1             S prio 24  stack free   532 B  cpu   0.0 %
+21:36:29.534 > I (4628161) diag:   wifi             B prio 23  stack free  3444 B  cpu   0.7 %
+21:36:29.534 > I (4628171) diag:   esp_timer        S prio 22  stack free  2988 B  cpu   0.0 %
+21:36:29.543 > I (4628181) diag:   sys_evt          B prio 20  stack free   576 B  cpu   0.0 %
+21:36:29.543 > I (4628181) diag:   Tmr Svc          B prio  1  stack free  1316 B  cpu   0.0 %
+21:36:31.820 > [21:36:20] T:21.5 H:44% P:982 ERR:0
+21:36:36.820 > [21:36:25] T:21.5 H:44% P:982 ERR:0
+
+Notes:
+- State letters: X running, R ready, B blocked, S suspended. The idle tasks (IDLE0/IDLE1) take about 99 % of each core.
+- "stack free" is the high-water mark: the smallest amount of free stack seen since the task started.
+- The lines above are an excerpt, not the whole run: the earlier 77 minutes are summarised only by the uptime counter.
