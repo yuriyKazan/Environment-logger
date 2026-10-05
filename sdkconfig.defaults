@@ -1,0 +1,12 @@
+# Project-specific ESP-IDF settings. The generated sdkconfig.<env> is not tracked: it is rebuilt from this file.
+
+# Task watchdog (see docs/architecture.md, section 5 and docs/decisions.md).
+# 10 s timeout, decoupled from the 5 s measurement interval: T1, T2 and T3 feed it about once per second.
+CONFIG_ESP_TASK_WDT_EN=y
+CONFIG_ESP_TASK_WDT_INIT=y
+CONFIG_ESP_TASK_WDT_TIMEOUT_S=10
+# A timeout must reset the chip (reset reason ESP_RST_TASK_WDT), not just print a warning.
+CONFIG_ESP_TASK_WDT_PANIC=y
+# Only the application tasks are monitored, so a timeout always points at one of them.
+CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0=n
+CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1=n
