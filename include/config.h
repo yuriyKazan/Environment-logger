@@ -43,9 +43,6 @@ inline constexpr uint32_t MEASURE_INTERVAL_MS = 5000;   // time between measurem
 // ---- EMA filter ----
 // alpha = 0.2 at a 5 s period gives a time constant of 22 s (see include/ema.h).
 inline constexpr float EMA_ALPHA = 0.2f;
-// Temporary experiment: also print CSV lines with alpha = 0.05 / 0.2 / 0.5 side by side.
-inline constexpr bool EMA_EXPERIMENT_LOG = false;
-inline constexpr float EMA_EXPERIMENT_ALPHAS[3] = {0.05f, 0.2f, 0.5f};
 
 // ---- RTC ----
 // Bring-up helper: if the DS3231 time is not valid at boot, set it to the firmware build time
@@ -59,9 +56,15 @@ inline constexpr gpio_num_t BUTTON_GPIO = GPIO_NUM_6;       // active low, inter
 inline constexpr int64_t BUTTON_DEBOUNCE_US = 50 * 1000;    // edges closer than this are ignored
 inline constexpr uint32_t HEARTBEAT_LED_PERIOD_MS = 500;    // bring-up: LED_OK toggle period
 
-// ---- Queues and tasks ----
-inline constexpr size_t ISR_QUEUE_LEN = 8;                  // Q_ISR: timer/button ISR -> task
-inline constexpr uint32_t BRINGUP_TASK_STACK = 3072;
-inline constexpr unsigned BRINGUP_TASK_PRIO = 5;
+// ---- Queues, tasks, mutex ----
+inline constexpr size_t ISR_QUEUE_LEN = 8;                  // Q_ISR: timer/button events -> T1
+inline constexpr size_t LOG_QUEUE_LEN = 8;                  // Q_LOG: T1 -> T2
+inline constexpr uint32_t SENSOR_TASK_STACK = 4096;
+inline constexpr unsigned SENSOR_TASK_PRIO = 5;
+inline constexpr uint32_t UART_LOG_TASK_STACK = 4096;
+inline constexpr unsigned UART_LOG_TASK_PRIO = 4;
+inline constexpr uint32_t I2C_MUTEX_TIMEOUT_MS = 200;       // never wait for the bus forever
+inline constexpr uint32_t TASK_WAIT_MS = 1000;              // finite wait on queues (WDT feed point)
+inline constexpr size_t LOG_LINE_MAX = 96;
 
 }  // namespace config
