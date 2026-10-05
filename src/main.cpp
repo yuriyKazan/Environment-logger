@@ -20,7 +20,9 @@
 #include "led.h"
 #include "mqtt_publisher.h"
 #include "mqtt_task.h"
+#include "error_counter.h"
 #include "sensor_task.h"
+#include "supervisor_task.h"
 #include "time_source.h"
 #include "uart_log_task.h"
 #include "wifi_manager.h"
@@ -35,12 +37,15 @@ static Bme280 g_bme(g_i2c, config::I2C_ADDR_BME280);
 static Ds3231 g_rtc(g_i2c, config::I2C_ADDR_DS3231);
 static TimeSource g_time;
 static Button g_button(config::BUTTON_GPIO);
+static ErrorCounter g_errors;
 static QueueHandle_t g_log_queue;   // Q_LOG: T1 -> T2
+static QueueHandle_t g_err_queue;   // T3's queue: errors from T1 and button events
 static QueueHandle_t g_mqtt_queue;  // Q_MQTT: T1 -> T4
 static WifiManager g_wifi;
 static MqttPublisher g_mqtt;
 static MqttTask *g_mqtt_task;  // needs Q_MQTT, created in app_main
-static SensorTask g_sensor_task(g_i2c_mutex, g_bme, g_rtc, g_time);
+static SensorTask g_sensor_task(g_i2c_mutex, g_bme, g_rtc, g_time, g_errors);
+static SupervisorTask g_supervisor(g_i2c, g_i2c_mutex, g_led_ok, g_led_err, g_button, g_errors);
 static UartLogTask *g_uart_task;  // needs Q_LOG, created in app_main
 
 static const char *device_name(uint8_t addr)
@@ -85,12 +90,6 @@ static bool build_time(Ds3231Time &t)
     t.minute = (uint8_t)atoi(tm_str + 3);
     t.second = (uint8_t)atoi(tm_str + 6);
     return true;
-}
-
-// esp_timer callback: heartbeat on LED_OK, no blocking waits.
-static void heartbeat_cb(void *)
-{
-    g_led_ok.toggle();
 }
 
 // Boot self-check (I2C scan, register reads), then start the tasks.
@@ -147,15 +146,17 @@ extern "C" void app_main(void)
     // Synchronisation objects, then the tasks (T1 sensor, T2 UART log) and the button.
     g_log_queue = xQueueCreate(config::LOG_QUEUE_LEN, sizeof(LogEntry));
     g_mqtt_queue = xQueueCreate(config::MQTT_QUEUE_LEN, sizeof(LogEntry));
+    g_err_queue = xQueueCreate(config::ERR_QUEUE_LEN, sizeof(IsrEvent));
     g_uart_task = new UartLogTask(g_log_queue);
     g_mqtt_task = new MqttTask(g_mqtt, g_mqtt_queue);
-    if (g_i2c_mutex.init() != ESP_OK || g_log_queue == nullptr || g_mqtt_queue == nullptr ||
+    if (g_i2c_mutex.init() != ESP_OK || g_log_queue == nullptr || g_mqtt_queue == nullptr || g_err_queue == nullptr ||
         g_led_ok.init() != ESP_OK || g_led_err.init() != ESP_OK) {
         ESP_LOGE(TAG, "mutex/queue/LED init failed");
         return;
     }
-    if (g_uart_task->start() != ESP_OK || g_sensor_task.start(g_log_queue, g_mqtt_queue) != ESP_OK ||
-        g_button.init(g_sensor_task.isr_queue()) != ESP_OK) {
+    if (g_uart_task->start() != ESP_OK || g_sensor_task.start(g_log_queue, g_mqtt_queue, g_err_queue) != ESP_OK ||
+        g_supervisor.start(g_err_queue, g_sensor_task.queue()) != ESP_OK ||
+        g_button.init(g_err_queue) != ESP_OK) {
         ESP_LOGE(TAG, "task or button start failed");
         return;
     }
@@ -171,14 +172,5 @@ extern "C" void app_main(void)
         ESP_LOGE(TAG, "Wi-Fi/MQTT start failed: continuing with the UART log only");
     }
 
-    esp_timer_handle_t hb = nullptr;
-    esp_timer_create_args_t hb_args = {};
-    hb_args.callback = heartbeat_cb;
-    hb_args.name = "heartbeat";
-    if (esp_timer_create(&hb_args, &hb) != ESP_OK ||
-        esp_timer_start_periodic(hb, (uint64_t)config::HEARTBEAT_LED_PERIOD_MS * 1000) != ESP_OK) {
-        ESP_LOGE(TAG, "heartbeat timer failed");
-        return;
-    }
     ESP_LOGI(TAG, "running: one log line every %u ms", (unsigned)config::MEASURE_INTERVAL_MS);
 }
