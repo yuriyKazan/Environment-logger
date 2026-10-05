@@ -61,5 +61,6 @@ private:
 
     bool error_active_ = false;
     bool press_active_ = false;
+    int64_t press_started_us_ = 0;
     uint32_t bus_resets_ = 0;
 };

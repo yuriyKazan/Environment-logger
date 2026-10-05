@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "esp_log.h"
+#include "watchdog.h"
 
 static const char *TAG = "T3";
 
@@ -41,10 +42,13 @@ void SupervisorTask::long_press_cb(void *arg)
 
 void SupervisorTask::run()
 {
+    wdt_subscribe_current_task("T3");
     for (;;) {
         IsrEvent ev;
-        // Finite wait: the timeout is the heartbeat of this task (LED blink now, watchdog feed in step 4.3).
-        if (xQueueReceive(queue_, &ev, pdMS_TO_TICKS(config::SUPERVISOR_TICK_MS)) != pdTRUE) {
+        // Finite wait: the timeout is the heartbeat of this task (LED blink and watchdog feed).
+        const bool got_event = xQueueReceive(queue_, &ev, pdMS_TO_TICKS(config::SUPERVISOR_TICK_MS)) == pdTRUE;
+        wdt_feed();
+        if (!got_event) {
             tick();
             continue;
         }
@@ -109,16 +113,20 @@ void SupervisorTask::on_measurement_ok()
 // press. The timer handler checks the pin level too, because a very short press loses its release.
 void SupervisorTask::on_button_press()
 {
+    ESP_LOGI(TAG, "button: press event (pin %s)", button_.is_pressed() ? "low" : "high");
     if (press_active_) {
         return;
     }
     press_active_ = true;
+    press_started_us_ = esp_timer_get_time();
     esp_timer_stop(long_press_timer_);
     esp_timer_start_once(long_press_timer_, (uint64_t)config::BUTTON_LONG_PRESS_MS * 1000);
 }
 
 void SupervisorTask::on_button_release()
 {
+    ESP_LOGI(TAG, "button: release event (pin %s), %s", button_.is_pressed() ? "low" : "high",
+             press_active_ ? "short press" : "ignored (no press pending)");
     if (!press_active_) {
         return;  // the long press was already handled
     }
@@ -132,6 +140,8 @@ void SupervisorTask::on_long_press_timeout()
     if (!press_active_) {
         return;
     }
+    ESP_LOGI(TAG, "button: long-press timer after %lld ms, pin %s", (long long)((esp_timer_get_time() - press_started_us_) / 1000),
+             button_.is_pressed() ? "low" : "high");
     press_active_ = false;
     if (button_.is_pressed()) {
         long_press_action();
