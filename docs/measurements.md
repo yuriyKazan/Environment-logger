@@ -60,10 +60,6 @@ With `config::FAULT_STALL_UART = true`, T2 stops reading Q_LOG for 90 s. The pol
 
 Q_MQTT has the opposite policy (drop the oldest entry) so the broker always gets the freshest data.
 
-## Not measured
-
-- Current consumption: the board is powered over USB and Light Sleep was not implemented, so there is nothing to compare (see `decisions.md`, item 10).
-
 ## Cross-check with the logic analyzer
 
 The timing measured by the firmware agrees with what the analyzer sees on the wire ([`logic-analyzer.md`](logic-analyzer.md)): the cycles start 4.99974 s apart, the BME280 conversion wait is 10.26 ms, the read phase from the first read START to the last STOP is 1.27 ms (firmware: 1.23 ms on average), and the data actually moving on the bus takes 0.63 ms per cycle. The difference between wire time and the firmware figures is driver and mutex overhead, not waiting on the devices.

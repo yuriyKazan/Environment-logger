@@ -69,7 +69,7 @@ inline constexpr uint32_t DIAG_T1_STATS_CYCLES = 12;        // T1 logs its timin
 // Fault injection for the queue overflow test: when enabled, T2 stops reading Q_LOG for a while after
 // FAULT_STALL_UART_AFTER_ENTRIES entries, so the queue fills and the "Q_LOG full" policy can be observed.
 // T2 keeps feeding the watchdog while stalled. Must be false in normal use.
-inline constexpr bool FAULT_STALL_UART = true;
+inline constexpr bool FAULT_STALL_UART = false;
 inline constexpr uint32_t FAULT_STALL_UART_AFTER_ENTRIES = 3;
 inline constexpr uint32_t FAULT_STALL_UART_MS = 90 * 1000;
 
