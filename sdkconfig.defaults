@@ -10,3 +10,7 @@ CONFIG_ESP_TASK_WDT_PANIC=y
 # Only the application tasks are monitored, so a timeout always points at one of them.
 CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0=n
 CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1=n
+
+# Task and CPU statistics for the diagnostics task (uxTaskGetSystemState, per-task run-time counters).
+CONFIG_FREERTOS_USE_TRACE_FACILITY=y
+CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS=y
