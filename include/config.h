@@ -24,6 +24,7 @@ inline constexpr int I2C_XFER_TIMEOUT_MS = 100;   // register read/write timeout
 // ---- I2C addresses ----
 inline constexpr uint8_t I2C_ADDR_BME280 = 0x76;
 inline constexpr uint8_t I2C_ADDR_DS3231 = 0x68;
+inline constexpr uint8_t I2C_ADDR_AT24C32 = 0x50;  // EEPROM on the DS3231 module (unused)
 // ---- Registers used for the bring-up check ----
 inline constexpr uint8_t BME280_REG_CHIP_ID = 0xD0;
 inline constexpr uint8_t BME280_CHIP_ID = 0x60;

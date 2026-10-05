@@ -13,6 +13,7 @@ static const char *device_name(uint8_t addr)
     switch (addr) {
     case config::I2C_ADDR_BME280: return "BME280";
     case config::I2C_ADDR_DS3231: return "DS3231";
+    case config::I2C_ADDR_AT24C32: return "AT24C32 EEPROM on DS3231 module";
     default:                      return "unknown";
     }
 }
