@@ -1,6 +1,7 @@
 #include "esp_log.h"
 #include "esp_system.h"
 
+#include "bme280.h"
 #include "button.h"
 #include "config.h"
 #include "data_types.h"
@@ -16,7 +17,9 @@ static const char *TAG = config::APP_NAME;
 static I2cBus g_i2c;
 static Led g_led_ok(config::LED_OK_GPIO);
 static Led g_led_err(config::LED_ERR_GPIO);
+static Bme280 g_bme(g_i2c, config::I2C_ADDR_BME280);
 static Button g_button(config::BUTTON_GPIO);
+static esp_timer_handle_t g_conv_timer;
 static QueueHandle_t g_isr_queue;
 
 static const char *device_name(uint8_t addr)
@@ -39,7 +42,7 @@ static bool was_found(const uint8_t *found, size_t n, uint8_t addr)
     return false;
 }
 
-// Bring-up consumer of Q_ISR (Phase 2.3). Replaced by T1 in Phase 3.
+// Bring-up consumer of Q_ISR (Phases 2.3-2.4). Replaced by T1 in Phase 3.
 static void bringup_task(void *)
 {
     uint32_t presses = 0;
@@ -47,14 +50,49 @@ static void bringup_task(void *)
     for (;;) {
         // Blocks until an event arrives. portMAX_DELAY is acceptable here: this task does
         // not feed the WDT and has nothing else to do (see docs/decisions.md, item 6).
-        if (xQueueReceive(g_isr_queue, &ev, portMAX_DELAY) == pdTRUE && ev.type == IsrEventType::Button) {
+        if (xQueueReceive(g_isr_queue, &ev, portMAX_DELAY) != pdTRUE) {
+            continue;
+        }
+        switch (ev.type) {
+        case IsrEventType::Button:
             presses++;
             g_led_err.toggle();
             ESP_LOGI(TAG, "button pressed (#%u, t=%lld us, dropped=%u), LED_ERR %s", (unsigned)presses,
                      (long long)ev.timestamp_us, (unsigned)g_button.dropped(), g_led_err.is_on() ? "on" : "off");
+            break;
+        case IsrEventType::Tick: {
+            esp_err_t err = g_bme.start_measurement();
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "BME280 start failed: %s", esp_err_to_name(err));
+                break;
+            }
+            // Wait for the conversion with a one-shot timer instead of a delay.
+            esp_timer_start_once(g_conv_timer, config::BME280_CONVERSION_US);
+            break;
+        }
+        case IsrEventType::ConversionDone: {
+            Bme280Sample sample;
+            esp_err_t err = g_bme.read(sample);
+            if (err == ESP_OK) {
+                ESP_LOGI(TAG, "T=%.2f C  H=%.1f %%  P=%.1f hPa", sample.temp_c, sample.hum_pct, sample.press_hpa);
+            } else {
+                ESP_LOGE(TAG, "BME280 read failed: %s", esp_err_to_name(err));
+            }
+            break;
+        }
         }
     }
 }
+
+// esp_timer callbacks only post events; the work happens in bringup_task.
+static void post_event_cb(IsrEventType type)
+{
+    const IsrEvent ev = {type, esp_timer_get_time()};
+    xQueueSend(g_isr_queue, &ev, 0);
+}
+
+static void tick_cb(void *) { post_event_cb(IsrEventType::Tick); }
+static void conversion_cb(void *) { post_event_cb(IsrEventType::ConversionDone); }
 
 // esp_timer callback: heartbeat on LED_OK, no blocking waits.
 static void heartbeat_cb(void *)
@@ -122,6 +160,24 @@ extern "C" void app_main(void)
     if (xTaskCreate(bringup_task, "bringup", config::BRINGUP_TASK_STACK, nullptr, config::BRINGUP_TASK_PRIO,
                     nullptr) != pdPASS) {
         ESP_LOGE(TAG, "bringup task creation failed");
+        return;
+    }
+
+    if (g_bme.init() != ESP_OK) {
+        ESP_LOGE(TAG, "BME280 init failed");
+        return;
+    }
+
+    esp_timer_handle_t tick = nullptr;
+    esp_timer_create_args_t conv_args = {};
+    conv_args.callback = conversion_cb;
+    conv_args.name = "bme_conv";
+    esp_timer_create_args_t tick_args = {};
+    tick_args.callback = tick_cb;
+    tick_args.name = "tick";
+    if (esp_timer_create(&conv_args, &g_conv_timer) != ESP_OK || esp_timer_create(&tick_args, &tick) != ESP_OK ||
+        esp_timer_start_periodic(tick, (uint64_t)config::MEASURE_INTERVAL_MS * 1000) != ESP_OK) {
+        ESP_LOGE(TAG, "measurement timers failed");
         return;
     }
 
