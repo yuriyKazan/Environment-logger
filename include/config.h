@@ -59,12 +59,25 @@ inline constexpr uint32_t HEARTBEAT_LED_PERIOD_MS = 500;    // bring-up: LED_OK 
 // ---- Queues, tasks, mutex ----
 inline constexpr size_t ISR_QUEUE_LEN = 8;                  // Q_ISR: timer/button events -> T1
 inline constexpr size_t LOG_QUEUE_LEN = 8;                  // Q_LOG: T1 -> T2
+inline constexpr size_t MQTT_QUEUE_LEN = 4;                 // Q_MQTT: T1 -> T4 (drops the oldest when full)
 inline constexpr uint32_t SENSOR_TASK_STACK = 4096;
 inline constexpr unsigned SENSOR_TASK_PRIO = 5;
 inline constexpr uint32_t UART_LOG_TASK_STACK = 4096;
 inline constexpr unsigned UART_LOG_TASK_PRIO = 4;
+inline constexpr uint32_t MQTT_TASK_STACK = 4096;
+inline constexpr unsigned MQTT_TASK_PRIO = 3;           // lowest: best effort, never competes with T1-T2
 inline constexpr uint32_t I2C_MUTEX_TIMEOUT_MS = 200;       // never wait for the bus forever
 inline constexpr uint32_t TASK_WAIT_MS = 1000;              // finite wait on queues (WDT feed point)
 inline constexpr size_t LOG_LINE_MAX = 96;
+
+// ---- Wi-Fi and MQTT (T4) ----
+// Credentials and the broker URI live in include/secrets.h (git-ignored, template: secrets.h.example).
+inline constexpr uint8_t WIFI_FAST_RETRIES = 5;             // immediate reconnect attempts after a drop
+inline constexpr uint32_t WIFI_SLOW_RETRY_MS = 30 * 1000;   // then one attempt per 30 s, forever (one-shot timer)
+// Public broker, no authentication: anyone can read or write these topics (see README, known limitations).
+inline constexpr const char *MQTT_TOPIC_PREFIX = "envlogger/ykazan";
+inline constexpr int MQTT_QOS = 0;                          // best effort, no retain
+inline constexpr size_t MQTT_TOPIC_MAX = 48;
+inline constexpr size_t MQTT_PAYLOAD_MAX = 24;
 
 }  // namespace config
