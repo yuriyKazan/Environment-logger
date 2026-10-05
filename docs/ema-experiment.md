@@ -16,7 +16,7 @@ For a sample period T the time constant is `tau = -T / ln(1 - alpha)`.
 ## Experiment
 
 Real BME280 data, one sample every 5 s, all three filters fed with the same raw samples
-(`EMA_EXPERIMENT_LOG = true` in `include/config.h` prints the CSV lines).
+(the experiment code that printed the CSV lines is in commit `57596bf`; it was removed when the measurement pipeline moved into tasks).
 Data: [`data/ema_experiment.csv`](data/ema_experiment.csv). Plot script: `tools/plot_ema.py`.
 
 The room was left alone for about 90 s, then a breath was directed at the sensor for roughly 45 s (a short, strong disturbance), then the sensor was left to recover.

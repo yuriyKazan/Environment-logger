@@ -10,34 +10,29 @@
 #include "config.h"
 #include "data_types.h"
 #include "ds3231.h"
-#include "ema.h"
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
-#include "freertos/task.h"
 #include "i2c_bus.h"
+#include "i2c_mutex.h"
 #include "led.h"
+#include "sensor_task.h"
 #include "time_source.h"
+#include "uart_log_task.h"
 
 static const char *TAG = config::APP_NAME;
 
 static I2cBus g_i2c;
+static I2cMutex g_i2c_mutex;
 static Led g_led_ok(config::LED_OK_GPIO);
 static Led g_led_err(config::LED_ERR_GPIO);
 static Bme280 g_bme(g_i2c, config::I2C_ADDR_BME280);
 static Ds3231 g_rtc(g_i2c, config::I2C_ADDR_DS3231);
 static TimeSource g_time;
-static Ema g_ema_t(config::EMA_ALPHA);
-static Ema g_ema_h(config::EMA_ALPHA);
-static Ema g_ema_p(config::EMA_ALPHA);
-// Experiment filters: [0..2] = EMA_EXPERIMENT_ALPHAS
-static Ema g_exp_t[3] = {Ema(config::EMA_EXPERIMENT_ALPHAS[0]), Ema(config::EMA_EXPERIMENT_ALPHAS[1]),
-                         Ema(config::EMA_EXPERIMENT_ALPHAS[2])};
-static Ema g_exp_h[3] = {Ema(config::EMA_EXPERIMENT_ALPHAS[0]), Ema(config::EMA_EXPERIMENT_ALPHAS[1]),
-                         Ema(config::EMA_EXPERIMENT_ALPHAS[2])};
 static Button g_button(config::BUTTON_GPIO);
-static esp_timer_handle_t g_conv_timer;
-static QueueHandle_t g_isr_queue;
+static QueueHandle_t g_log_queue;  // Q_LOG: T1 -> T2
+static SensorTask g_sensor_task(g_i2c_mutex, g_bme, g_rtc, g_time);
+static UartLogTask *g_uart_task;  // needs Q_LOG, created in app_main
 
 static const char *device_name(uint8_t addr)
 {
@@ -83,82 +78,13 @@ static bool build_time(Ds3231Time &t)
     return true;
 }
 
-// Bring-up consumer of Q_ISR (Phases 2.3-2.4). Replaced by T1 in Phase 3.
-static void bringup_task(void *)
-{
-    uint32_t presses = 0;
-    IsrEvent ev;
-    for (;;) {
-        // Blocks until an event arrives. portMAX_DELAY is acceptable here: this task does
-        // not feed the WDT and has nothing else to do (see docs/decisions.md, item 6).
-        if (xQueueReceive(g_isr_queue, &ev, portMAX_DELAY) != pdTRUE) {
-            continue;
-        }
-        switch (ev.type) {
-        case IsrEventType::Button:
-            presses++;
-            g_led_err.toggle();
-            ESP_LOGI(TAG, "button pressed (#%u, t=%lld us, dropped=%u), LED_ERR %s", (unsigned)presses,
-                     (long long)ev.timestamp_us, (unsigned)g_button.dropped(), g_led_err.is_on() ? "on" : "off");
-            break;
-        case IsrEventType::Tick: {
-            esp_err_t err = g_bme.start_measurement();
-            if (err != ESP_OK) {
-                ESP_LOGE(TAG, "BME280 start failed: %s", esp_err_to_name(err));
-                break;
-            }
-            // Wait for the conversion with a one-shot timer instead of a delay.
-            esp_timer_start_once(g_conv_timer, config::BME280_CONVERSION_US);
-            break;
-        }
-        case IsrEventType::ConversionDone: {
-            Bme280Sample sample;
-            esp_err_t err = g_bme.read(sample);
-            if (err == ESP_OK) {
-                bool trusted = false;
-                const time_t now = g_time.now(&trusted);
-                struct tm tmv;
-                gmtime_r(&now, &tmv);
-                const float t = g_ema_t.update(sample.temp_c);
-                const float h = g_ema_h.update(sample.hum_pct);
-                const float p = g_ema_p.update(sample.press_hpa);
-                ESP_LOGI(TAG, "[%02d:%02d:%02d%s] T=%.2f C  H=%.1f %%  P=%.1f hPa  (raw T=%.2f H=%.1f P=%.1f)",
-                         tmv.tm_hour, tmv.tm_min, tmv.tm_sec, trusted ? "" : " untrusted", t, h, p, sample.temp_c,
-                         sample.hum_pct, sample.press_hpa);
-                if (config::EMA_EXPERIMENT_LOG) {
-                    // CSV: uptime_ms, raw_T, T@a0, T@a1, T@a2, raw_H, H@a0, H@a1, H@a2
-                    ESP_LOGI(TAG, "EMA_CSV,%lld,%.2f,%.2f,%.2f,%.2f,%.1f,%.1f,%.1f,%.1f",
-                             (long long)(esp_timer_get_time() / 1000), sample.temp_c, g_exp_t[0].update(sample.temp_c),
-                             g_exp_t[1].update(sample.temp_c), g_exp_t[2].update(sample.temp_c), sample.hum_pct,
-                             g_exp_h[0].update(sample.hum_pct), g_exp_h[1].update(sample.hum_pct),
-                             g_exp_h[2].update(sample.hum_pct));
-                }
-            } else {
-                ESP_LOGE(TAG, "BME280 read failed: %s", esp_err_to_name(err));
-            }
-            break;
-        }
-        }
-    }
-}
-
-// esp_timer callbacks only post events; the work happens in bringup_task.
-static void post_event_cb(IsrEventType type)
-{
-    const IsrEvent ev = {type, esp_timer_get_time()};
-    xQueueSend(g_isr_queue, &ev, 0);
-}
-
-static void tick_cb(void *) { post_event_cb(IsrEventType::Tick); }
-static void conversion_cb(void *) { post_event_cb(IsrEventType::ConversionDone); }
-
 // esp_timer callback: heartbeat on LED_OK, no blocking waits.
 static void heartbeat_cb(void *)
 {
     g_led_ok.toggle();
 }
 
-// Phase 2.2: I2C scanner. Phase 2.3: LEDs and button. Replaced by the task-based design in Phase 3.
+// Boot self-check (I2C scan, register reads), then start the tasks.
 extern "C" void app_main(void)
 {
     ESP_LOGI(TAG, "boot, IDF %s", esp_get_idf_version());
@@ -174,60 +100,22 @@ extern "C" void app_main(void)
         ESP_LOGE(TAG, "I2C scan failed");
         return;
     }
-
     const size_t shown = count < config::I2C_SCAN_MAX_FOUND ? count : config::I2C_SCAN_MAX_FOUND;
     ESP_LOGI(TAG, "I2C scan (probe @ 100 kHz): %u device(s)", (unsigned)count);
     for (size_t i = 0; i < shown; i++) {
         ESP_LOGI(TAG, "  0x%02X (%s)", found[i], device_name(found[i]));
     }
-
     const uint8_t expected[] = {config::I2C_ADDR_BME280, config::I2C_ADDR_DS3231};
     for (uint8_t addr : expected) {
-        if (was_found(found, shown, addr)) {
-            ESP_LOGI(TAG, "0x%02X %s: OK", addr, device_name(addr));
-        } else {
+        if (!was_found(found, shown, addr)) {
             ESP_LOGE(TAG, "0x%02X %s: NOT FOUND (check wiring/power)", addr, device_name(addr));
+            return;
         }
     }
 
-    // Register reads at the configured bus speed prove the 400 kHz setup works.
-    ESP_LOGI(TAG, "register reads @ %u Hz:", (unsigned)config::I2C_FREQ_HZ);
-    uint8_t id = 0;
-    esp_err_t err = g_i2c.read_reg(config::I2C_ADDR_BME280, config::BME280_REG_CHIP_ID, &id, 1);
-    if (err == ESP_OK && id == config::BME280_CHIP_ID) {
-        ESP_LOGI(TAG, "  BME280 chip ID 0x%02X: OK", id);
-    } else {
-        ESP_LOGE(TAG, "  BME280 chip ID read failed (%s, id=0x%02X, expected 0x%02X)",
-                 esp_err_to_name(err), id, config::BME280_CHIP_ID);
-    }
-    uint8_t sec = 0;
-    err = g_i2c.read_reg(config::I2C_ADDR_DS3231, config::DS3231_REG_SECONDS, &sec, 1);
-    if (err == ESP_OK) {
-        ESP_LOGI(TAG, "  DS3231 seconds register 0x%02X: OK", sec);
-    } else {
-        ESP_LOGE(TAG, "  DS3231 read failed (%s)", esp_err_to_name(err));
-    }
-
-    // ---- Phase 2.3: LEDs, button, event queue ----
-    g_isr_queue = xQueueCreate(config::ISR_QUEUE_LEN, sizeof(IsrEvent));
-    if (g_isr_queue == nullptr || g_led_ok.init() != ESP_OK || g_led_err.init() != ESP_OK ||
-        g_button.init(g_isr_queue) != ESP_OK) {
-        ESP_LOGE(TAG, "LED/button init failed");
-        return;
-    }
-    if (xTaskCreate(bringup_task, "bringup", config::BRINGUP_TASK_STACK, nullptr, config::BRINGUP_TASK_PRIO,
-                    nullptr) != pdPASS) {
-        ESP_LOGE(TAG, "bringup task creation failed");
-        return;
-    }
-
-    if (g_bme.init() != ESP_OK) {
-        ESP_LOGE(TAG, "BME280 init failed");
-        return;
-    }
-
-    if (g_rtc.init() != ESP_OK) {
-        ESP_LOGE(TAG, "DS3231 init failed");
+    // Devices, RTC state and time source. The tasks are not running yet, so no mutex is needed here.
+    if (g_bme.init() != ESP_OK || g_rtc.init() != ESP_OK) {
+        ESP_LOGE(TAG, "BME280/DS3231 init failed");
         return;
     }
     Ds3231Reading rtc;
@@ -246,16 +134,17 @@ extern "C" void app_main(void)
     }
     g_time.init(g_rtc);
 
-    esp_timer_handle_t tick = nullptr;
-    esp_timer_create_args_t conv_args = {};
-    conv_args.callback = conversion_cb;
-    conv_args.name = "bme_conv";
-    esp_timer_create_args_t tick_args = {};
-    tick_args.callback = tick_cb;
-    tick_args.name = "tick";
-    if (esp_timer_create(&conv_args, &g_conv_timer) != ESP_OK || esp_timer_create(&tick_args, &tick) != ESP_OK ||
-        esp_timer_start_periodic(tick, (uint64_t)config::MEASURE_INTERVAL_MS * 1000) != ESP_OK) {
-        ESP_LOGE(TAG, "measurement timers failed");
+    // Synchronisation objects, then the tasks (T1 sensor, T2 UART log) and the button.
+    g_log_queue = xQueueCreate(config::LOG_QUEUE_LEN, sizeof(LogEntry));
+    g_uart_task = new UartLogTask(g_log_queue);
+    if (g_i2c_mutex.init() != ESP_OK || g_log_queue == nullptr || g_led_ok.init() != ESP_OK ||
+        g_led_err.init() != ESP_OK) {
+        ESP_LOGE(TAG, "mutex/queue/LED init failed");
+        return;
+    }
+    if (g_uart_task->start() != ESP_OK || g_sensor_task.start(g_log_queue) != ESP_OK ||
+        g_button.init(g_sensor_task.isr_queue()) != ESP_OK) {
+        ESP_LOGE(TAG, "task or button start failed");
         return;
     }
 
@@ -268,6 +157,5 @@ extern "C" void app_main(void)
         ESP_LOGE(TAG, "heartbeat timer failed");
         return;
     }
-    ESP_LOGI(TAG, "LED_OK blinks every %u ms; press the button to toggle LED_ERR",
-             (unsigned)config::HEARTBEAT_LED_PERIOD_MS);
+    ESP_LOGI(TAG, "running: one log line every %u ms", (unsigned)config::MEASURE_INTERVAL_MS);
 }
