@@ -34,8 +34,49 @@ because the ESP32-S3 supports 2.4 GHz only. The UART log kept printing every 5 s
 
 All four topics arrive every 5 s and match the UART line (T:24.6 H:40% P:983 ERR:0).
 
-=== 3. Reconnect test ===
-The Wi-Fi router was switched off for about one minute. Publication resumed on its own about two minutes after the
-router was switched off (a one-minute outage plus the 30 s slow retry cycle). Reported by the author.
-Not captured in this file: the UART log during the outage, so "UART keeps printing every 5 s while offline" is
-supported only by the first-connection failure in section 1, not by a dedicated capture of this test.
+=== 3. Outage test: router switched off, UART log observed (monitor timestamps on the left) ===
+Result: the UART log kept printing one line every 5 s through the whole outage (RTC time stamps 16:29:11 ... 16:30:56,
+no gaps; monitor time between lines 5.00 s +/- 7 ms). Wi-Fi reconnected by itself 31 s after the slow-retry cycle began,
+and the MQTT client reconnected to the broker about 10 s after the IP address came back.
+
+16:29:23.426 > [16:29:11] T:24.3 H:40% P:982 ERR:0
+16:29:28.431 > [16:29:16] T:24.3 H:40% P:982 ERR:0
+16:29:33.430 > [16:29:21] T:24.3 H:40% P:982 ERR:0
+16:29:35.960 > I (5902999) wifi:bcn_timeout,ap_probe_send_start
+16:29:38.431 > [16:29:26] T:24.3 H:40% P:982 ERR:0
+16:29:38.491 > W (5905519) wifi: disconnected, reason 200: beacon timeout (signal lost); retry 1/5
+16:29:38.492 > E (5905519) transport_base: tcp_read error, errno=Software caused connection abort
+16:29:38.525 > W (5905549) mqtt: disconnected from the broker
+16:29:40.901 > W (5907939) wifi: disconnected, reason 201: AP not found; retry 2/5
+16:29:43.312 > W (5910349) wifi: disconnected, reason 201: AP not found; retry 3/5
+16:29:43.429 > [16:29:31] T:24.3 H:40% P:982 ERR:0
+16:29:45.723 > W (5912759) wifi: disconnected, reason 201: AP not found; retry 4/5
+16:29:48.134 > W (5915169) wifi: disconnected, reason 201: AP not found; retry 5/5
+16:29:48.429 > [16:29:36] T:24.3 H:39% P:982 ERR:0
+16:29:50.546 > W (5917579) wifi: still offline (reason 201: AP not found), next attempt in 30 s
+16:29:53.428 > [16:29:41] T:24.3 H:39% P:982 ERR:0
+16:29:55.518 > E (5922559) esp-tls: couldn't get hostname for :broker.hivemq.com: getaddrinfo() returns 202
+16:29:55.532 > W (5922569) mqtt: disconnected from the broker
+16:29:58.428 > [16:29:46] T:24.3 H:39% P:982 ERR:0
+16:30:03.426 > [16:29:51] T:24.3 H:39% P:982 ERR:0
+16:30:08.427 > [16:29:56] T:24.3 H:39% P:982 ERR:0
+16:30:13.426 > [16:30:01] T:24.3 H:39% P:982 ERR:0
+16:30:17.525 > E (5944569) esp-tls: couldn't get hostname for :broker.hivemq.com: getaddrinfo() returns 202
+16:30:18.419 > [16:30:06] T:24.3 H:39% P:982 ERR:0
+16:30:21.154 > I (5948189) wifi:connected with <ssid>, aid = 4, channel 4, BW20, bssid = <mac>
+16:30:21.154 > I (5948189) wifi:security: WPA2-PSK, phy: bgn, rssi: -67
+16:30:22.805 > I (5949849) esp_netif_handlers: sta ip: <ip>, mask: 255.255.255.0, gw: <ip>
+16:30:22.810 > I (5949849) wifi: got IP <ip>
+16:30:23.424 > [16:30:11] T:24.3 H:39% P:982 ERR:0
+16:30:28.424 > [16:30:16] T:24.3 H:39% P:982 ERR:0
+16:30:32.713 > I (5959759) mqtt: connected to the broker
+16:30:33.421 > [16:30:21] T:24.3 H:39% P:982 ERR:0
+16:30:38.424 > [16:30:26] T:24.3 H:39% P:982 ERR:0
+16:30:43.422 > [16:30:31] T:24.3 H:39% P:982 ERR:0
+16:30:48.421 > [16:30:36] T:24.3 H:39% P:982 ERR:0
+
+Notes:
+- Reason 201 means the access point is not visible: here the router was switched off. (The first connection attempt
+  in section 1 failed with the same reason because the 5 GHz network is invisible to the ESP32-S3.)
+- The esp-tls / mqtt errors while offline come from the esp-mqtt stack retrying; they do not affect the other tasks.
+- Earlier, a separate outage of about one minute resumed publication within about two minutes (reported by the author).
