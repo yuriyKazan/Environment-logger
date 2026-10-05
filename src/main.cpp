@@ -10,6 +10,7 @@
 #include "config.h"
 #include "data_types.h"
 #include "ds3231.h"
+#include "ema.h"
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
@@ -26,6 +27,14 @@ static Led g_led_err(config::LED_ERR_GPIO);
 static Bme280 g_bme(g_i2c, config::I2C_ADDR_BME280);
 static Ds3231 g_rtc(g_i2c, config::I2C_ADDR_DS3231);
 static TimeSource g_time;
+static Ema g_ema_t(config::EMA_ALPHA);
+static Ema g_ema_h(config::EMA_ALPHA);
+static Ema g_ema_p(config::EMA_ALPHA);
+// Experiment filters: [0..2] = EMA_EXPERIMENT_ALPHAS
+static Ema g_exp_t[3] = {Ema(config::EMA_EXPERIMENT_ALPHAS[0]), Ema(config::EMA_EXPERIMENT_ALPHAS[1]),
+                         Ema(config::EMA_EXPERIMENT_ALPHAS[2])};
+static Ema g_exp_h[3] = {Ema(config::EMA_EXPERIMENT_ALPHAS[0]), Ema(config::EMA_EXPERIMENT_ALPHAS[1]),
+                         Ema(config::EMA_EXPERIMENT_ALPHAS[2])};
 static Button g_button(config::BUTTON_GPIO);
 static esp_timer_handle_t g_conv_timer;
 static QueueHandle_t g_isr_queue;
@@ -110,8 +119,20 @@ static void bringup_task(void *)
                 const time_t now = g_time.now(&trusted);
                 struct tm tmv;
                 gmtime_r(&now, &tmv);
-                ESP_LOGI(TAG, "[%02d:%02d:%02d%s] T=%.2f C  H=%.1f %%  P=%.1f hPa", tmv.tm_hour, tmv.tm_min,
-                         tmv.tm_sec, trusted ? "" : " untrusted", sample.temp_c, sample.hum_pct, sample.press_hpa);
+                const float t = g_ema_t.update(sample.temp_c);
+                const float h = g_ema_h.update(sample.hum_pct);
+                const float p = g_ema_p.update(sample.press_hpa);
+                ESP_LOGI(TAG, "[%02d:%02d:%02d%s] T=%.2f C  H=%.1f %%  P=%.1f hPa  (raw T=%.2f H=%.1f P=%.1f)",
+                         tmv.tm_hour, tmv.tm_min, tmv.tm_sec, trusted ? "" : " untrusted", t, h, p, sample.temp_c,
+                         sample.hum_pct, sample.press_hpa);
+                if (config::EMA_EXPERIMENT_LOG) {
+                    // CSV: uptime_ms, raw_T, T@a0, T@a1, T@a2, raw_H, H@a0, H@a1, H@a2
+                    ESP_LOGI(TAG, "EMA_CSV,%lld,%.2f,%.2f,%.2f,%.2f,%.1f,%.1f,%.1f,%.1f",
+                             (long long)(esp_timer_get_time() / 1000), sample.temp_c, g_exp_t[0].update(sample.temp_c),
+                             g_exp_t[1].update(sample.temp_c), g_exp_t[2].update(sample.temp_c), sample.hum_pct,
+                             g_exp_h[0].update(sample.hum_pct), g_exp_h[1].update(sample.hum_pct),
+                             g_exp_h[2].update(sample.hum_pct));
+                }
             } else {
                 ESP_LOGE(TAG, "BME280 read failed: %s", esp_err_to_name(err));
             }
