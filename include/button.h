@@ -1,7 +1,7 @@
 #pragma once
 // Periph layer: active-low button on a GPIO. An any-edge ISR applies quiet-time debounce
 // (an edge counts as a press only after BUTTON_DEBOUNCE_US without any edge) and posts an
-// IsrEvent{Button} to a queue. No polling, no delays.
+// IsrEvent{Button} (press) or IsrEvent{ButtonRelease} (release) to a queue. No polling, no delays.
 
 #include <cstdint>
 #include "driver/gpio.h"
@@ -16,6 +16,9 @@ public:
     // Configure the pin (input, pull-up, both edges) and attach the ISR.
     // `queue` must hold IsrEvent items and outlive the button.
     esp_err_t init(QueueHandle_t queue);
+
+    // Current level of the pin: true while the button is held down.
+    bool is_pressed() const { return gpio_get_level(pin_) == 0; }
 
     // Presses that could not be queued because the queue was full.
     uint32_t dropped() const { return dropped_; }

@@ -38,17 +38,17 @@ void IRAM_ATTR Button::isr(void *arg)
 
     // Quiet-time debounce: every edge (press, release, bounce) restarts the timer. An event
     // is produced only if the line was quiet for BUTTON_DEBOUNCE_US before this edge, so
-    // bounce after a press and bounce after a release are both ignored.
+    // bounce after a press and bounce after a release are both ignored. (A press shorter than
+    // the quiet time loses its release event; the long-press timer in T3 covers that case.)
     const int64_t quiet_us = now - self->last_edge_us_;
     self->last_edge_us_ = now;
     if (quiet_us < config::BUTTON_DEBOUNCE_US) {
         return;
     }
-    if (gpio_get_level(self->pin_) != 0) {
-        return;  // line is high: this is a release, not a press
-    }
+    // The line level after the quiet time tells which edge this is: low = press, high = release.
+    const bool pressed = gpio_get_level(self->pin_) == 0;
 
-    const IsrEvent ev = {IsrEventType::Button, now};
+    const IsrEvent ev = {pressed ? IsrEventType::Button : IsrEventType::ButtonRelease, now, 0};
     BaseType_t woken = pdFALSE;
     if (xQueueSendFromISR(self->queue_, &ev, &woken) != pdTRUE) {
         self->dropped_ = self->dropped_ + 1;
