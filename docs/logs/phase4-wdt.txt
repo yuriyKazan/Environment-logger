@@ -1,0 +1,50 @@
+Phase 4.3/4.4 watchdog test log (ESP32-S3-DevKitM-1, ESP-IDF 5.5.3)
+Test: a long button press asks T1 to hang on purpose (it blocks on a semaphore that is never given, like a deadlock).
+T1, T2 and T3 are subscribed to the task watchdog (timeout 10 s, panic on timeout); T4 is not.
+Captured with: pio device monitor (COM4, 115200 8-N-1). Wi-Fi, IP and MAC lines and the user name in file paths are
+omitted or replaced.
+
+--- First run ---
+17:43:56.317 > [17:43:44] T:24.1 H:39% P:982 ERR:0
+17:44:01.317 > [17:43:49] T:24.1 H:39% P:982 ERR:0
+17:44:01.990 > I (16140) T3: button: long-press timer after 3000 ms, button held
+17:44:01.992 > W (16140) T3: button: long press, watchdog test requested
+17:44:01.992 > E (16140) T1: TEST: hanging on purpose, the watchdog should reset the chip
+   (no more measurement lines: T1 is hung; T2, T3 and T4 keep running)
+17:44:12.311 > E (26460) task_wdt: Task watchdog got triggered. The following tasks/users did not reset the watchdog in time:
+17:44:12.317 > E (26460) task_wdt:  - T1_sensor (CPU 0)
+17:44:12.323 > E (26460) task_wdt: Tasks currently running:
+17:44:12.328 > E (26460) task_wdt: CPU 0: IDLE0
+17:44:12.328 > E (26460) task_wdt: CPU 1: IDLE1
+17:44:12.334 > E (26460) task_wdt: Aborting.
+17:44:12.334 > E (26460) task_wdt: Print CPU 0 (current core) backtrace
+17:44:13.249 > Backtrace: 0x4037a307:0x3fca81e0 0x420a0d06:0x3fca8200 0x4037de55:0x3fca8220 0x4037cef5:0x3fca8240
+17:44:13.249 > Rebooting...
+17:44:13.712 > rst:0xc (RTC_SW_CPU_RST),boot:0x29 (SPI_FAST_FLASH_BOOT)
+17:44:13.712 > I (405) main_task: Calling app_main()
+17:44:13.712 > I (405) env-logger: boot, IDF 5.5.3
+17:44:13.712 > E (405) reset: previous run ended with a WATCHDOG reset (task watchdog): a task hung or deadlocked
+
+--- Second run (same sequence) ---
+17:44:27.950 > E (15555) T1: TEST: hanging on purpose, the watchdog should reset the chip
+17:44:37.942 > E (25555) task_wdt: Task watchdog got triggered. The following tasks/users did not reset the watchdog in time:
+17:44:37.942 > E (25555) task_wdt:  - T1_sensor (CPU 1)
+17:44:39.227 > E (405) reset: previous run ended with a WATCHDOG reset (task watchdog): a task hung or deadlocked
+
+--- Third run (same sequence) ---
+17:45:04.852 > E (26825) T1: TEST: hanging on purpose, the watchdog should reset the chip
+17:45:15.502 > E (37485) task_wdt: Task watchdog got triggered. The following tasks/users did not reset the watchdog in time:
+17:45:15.508 > E (37485) task_wdt:  - T1_sensor (CPU 1)
+17:45:15.514 > E (37485) task_wdt: Tasks currently running:
+17:45:15.520 > E (37485) task_wdt: CPU 0: tiT
+17:45:15.520 > E (37485) task_wdt: CPU 1: T2_uart
+17:45:17.xxx > E (405) reset: previous run ended with a WATCHDOG reset (task watchdog): a task hung or deadlocked
+
+What the log shows:
+- The watchdog names the hung task (T1_sensor) about 10.3 s after the hang (16140 ms -> 26460 ms), resets the chip, and the
+  reason is reported after the restart. Repeated three times with the same result.
+- The backtrace shows IDLE or T2_uart because it is the stack of the CPU that handled the timeout; the hung T1 is blocked on a
+  semaphore, so it is not running on any CPU. The culprit is the task list line, not the backtrace.
+- The long press was triggered by a short tap in these runs: the button module of this build reads low at rest and high when
+  pressed, and the code still assumed the opposite (pressed = low). The button events in these runs were therefore inverted.
+  This was fixed afterwards with config::BUTTON_PRESSED_LEVEL.
