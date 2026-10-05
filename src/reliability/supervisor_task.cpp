@@ -113,7 +113,7 @@ void SupervisorTask::on_measurement_ok()
 // press. The timer handler checks the pin level too, because a very short press loses its release.
 void SupervisorTask::on_button_press()
 {
-    ESP_LOGI(TAG, "button: press event (pin %s)", button_.is_pressed() ? "low" : "high");
+    ESP_LOGI(TAG, "button: press event (button is %s)", button_.is_pressed() ? "pressed" : "released");
     if (press_active_) {
         return;
     }
@@ -125,7 +125,7 @@ void SupervisorTask::on_button_press()
 
 void SupervisorTask::on_button_release()
 {
-    ESP_LOGI(TAG, "button: release event (pin %s), %s", button_.is_pressed() ? "low" : "high",
+    ESP_LOGI(TAG, "button: release event (button is %s), %s", button_.is_pressed() ? "pressed" : "released",
              press_active_ ? "short press" : "ignored (no press pending)");
     if (!press_active_) {
         return;  // the long press was already handled
@@ -140,8 +140,8 @@ void SupervisorTask::on_long_press_timeout()
     if (!press_active_) {
         return;
     }
-    ESP_LOGI(TAG, "button: long-press timer after %lld ms, pin %s", (long long)((esp_timer_get_time() - press_started_us_) / 1000),
-             button_.is_pressed() ? "low" : "high");
+    ESP_LOGI(TAG, "button: long-press timer after %lld ms, button is %s", (long long)((esp_timer_get_time() - press_started_us_) / 1000),
+             button_.is_pressed() ? "pressed" : "released");
     press_active_ = false;
     if (button_.is_pressed()) {
         long_press_action();

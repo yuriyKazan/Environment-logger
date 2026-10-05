@@ -1,9 +1,10 @@
 #pragma once
-// Periph layer: active-low button on a GPIO. An any-edge ISR applies quiet-time debounce
+// Periph layer: push button on a GPIO (pressed level = config::BUTTON_PRESSED_LEVEL). An any-edge ISR applies quiet-time debounce
 // (an edge counts as a press only after BUTTON_DEBOUNCE_US without any edge) and posts an
 // IsrEvent{Button} (press) or IsrEvent{ButtonRelease} (release) to a queue. No polling, no delays.
 
 #include <cstdint>
+#include "config.h"
 #include "driver/gpio.h"
 #include "esp_err.h"
 #include "freertos/FreeRTOS.h"
@@ -13,12 +14,12 @@ class Button {
 public:
     explicit Button(gpio_num_t pin) : pin_(pin) {}
 
-    // Configure the pin (input, pull-up, both edges) and attach the ISR.
+    // Configure the pin (input, pull towards the idle level, both edges) and attach the ISR.
     // `queue` must hold IsrEvent items and outlive the button.
     esp_err_t init(QueueHandle_t queue);
 
     // Current level of the pin: true while the button is held down.
-    bool is_pressed() const { return gpio_get_level(pin_) == 0; }
+    bool is_pressed() const { return gpio_get_level(pin_) == config::BUTTON_PRESSED_LEVEL; }
 
     // Presses that could not be queued because the queue was full.
     uint32_t dropped() const { return dropped_; }

@@ -15,8 +15,10 @@ esp_err_t Button::init(QueueHandle_t queue)
     gpio_config_t cfg = {};
     cfg.pin_bit_mask = 1ULL << pin_;
     cfg.mode = GPIO_MODE_INPUT;
-    cfg.pull_up_en = GPIO_PULLUP_ENABLE;
-    cfg.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    // Pull towards the idle level: pressed high -> pull-down, pressed low -> pull-up.
+    const bool pressed_high = config::BUTTON_PRESSED_LEVEL != 0;
+    cfg.pull_up_en = pressed_high ? GPIO_PULLUP_DISABLE : GPIO_PULLUP_ENABLE;
+    cfg.pull_down_en = pressed_high ? GPIO_PULLDOWN_ENABLE : GPIO_PULLDOWN_DISABLE;
     cfg.intr_type = GPIO_INTR_ANYEDGE;  // both edges: release bounce must restart the quiet time
 
     esp_err_t err = gpio_config(&cfg);
@@ -45,8 +47,8 @@ void IRAM_ATTR Button::isr(void *arg)
     if (quiet_us < config::BUTTON_DEBOUNCE_US) {
         return;
     }
-    // The line level after the quiet time tells which edge this is: low = press, high = release.
-    const bool pressed = gpio_get_level(self->pin_) == 0;
+    // The line level after the quiet time tells which edge this is: pressed level = press, otherwise release.
+    const bool pressed = gpio_get_level(self->pin_) == config::BUTTON_PRESSED_LEVEL;
 
     const IsrEvent ev = {pressed ? IsrEventType::Button : IsrEventType::ButtonRelease, now, 0};
     BaseType_t woken = pdFALSE;

@@ -61,7 +61,10 @@ inline constexpr bool RTC_SET_FROM_BUILD_TIME_IF_INVALID = false;
 // ---- LEDs and button ----
 inline constexpr gpio_num_t LED_OK_GPIO = GPIO_NUM_4;
 inline constexpr gpio_num_t LED_ERR_GPIO = GPIO_NUM_5;
-inline constexpr gpio_num_t BUTTON_GPIO = GPIO_NUM_6;       // active low, internal pull-up
+inline constexpr gpio_num_t BUTTON_GPIO = GPIO_NUM_6;
+// Pin level while the button is held. This build: the button module reads low at rest and high when
+// pressed (measured from the logs), so 1. A bare switch between the pin and GND would be 0.
+inline constexpr int BUTTON_PRESSED_LEVEL = 1;
 inline constexpr int64_t BUTTON_DEBOUNCE_US = 50 * 1000;    // edges closer than this are ignored
 
 // ---- Queues, tasks, mutex ----
