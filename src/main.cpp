@@ -1,12 +1,23 @@
 #include "esp_log.h"
 #include "esp_system.h"
 
+#include "button.h"
 #include "config.h"
+#include "data_types.h"
+#include "esp_timer.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
+#include "freertos/task.h"
 #include "i2c_bus.h"
+#include "led.h"
 
 static const char *TAG = config::APP_NAME;
 
 static I2cBus g_i2c;
+static Led g_led_ok(config::LED_OK_GPIO);
+static Led g_led_err(config::LED_ERR_GPIO);
+static Button g_button(config::BUTTON_GPIO);
+static QueueHandle_t g_isr_queue;
 
 static const char *device_name(uint8_t addr)
 {
@@ -28,7 +39,30 @@ static bool was_found(const uint8_t *found, size_t n, uint8_t addr)
     return false;
 }
 
-// Phase 2.2: I2C scanner. Replaced by the task-based design in Phase 3.
+// Bring-up consumer of Q_ISR (Phase 2.3). Replaced by T1 in Phase 3.
+static void bringup_task(void *)
+{
+    uint32_t presses = 0;
+    IsrEvent ev;
+    for (;;) {
+        // Blocks until an event arrives. portMAX_DELAY is acceptable here: this task does
+        // not feed the WDT and has nothing else to do (see docs/decisions.md, item 6).
+        if (xQueueReceive(g_isr_queue, &ev, portMAX_DELAY) == pdTRUE && ev.type == IsrEventType::Button) {
+            presses++;
+            g_led_err.toggle();
+            ESP_LOGI(TAG, "button pressed (#%u, t=%lld us, dropped=%u), LED_ERR %s", (unsigned)presses,
+                     (long long)ev.timestamp_us, (unsigned)g_button.dropped(), g_led_err.is_on() ? "on" : "off");
+        }
+    }
+}
+
+// esp_timer callback: heartbeat on LED_OK, no blocking waits.
+static void heartbeat_cb(void *)
+{
+    g_led_ok.toggle();
+}
+
+// Phase 2.2: I2C scanner. Phase 2.3: LEDs and button. Replaced by the task-based design in Phase 3.
 extern "C" void app_main(void)
 {
     ESP_LOGI(TAG, "boot, IDF %s", esp_get_idf_version());
@@ -77,4 +111,29 @@ extern "C" void app_main(void)
     } else {
         ESP_LOGE(TAG, "  DS3231 read failed (%s)", esp_err_to_name(err));
     }
+
+    // ---- Phase 2.3: LEDs, button, event queue ----
+    g_isr_queue = xQueueCreate(config::ISR_QUEUE_LEN, sizeof(IsrEvent));
+    if (g_isr_queue == nullptr || g_led_ok.init() != ESP_OK || g_led_err.init() != ESP_OK ||
+        g_button.init(g_isr_queue) != ESP_OK) {
+        ESP_LOGE(TAG, "LED/button init failed");
+        return;
+    }
+    if (xTaskCreate(bringup_task, "bringup", config::BRINGUP_TASK_STACK, nullptr, config::BRINGUP_TASK_PRIO,
+                    nullptr) != pdPASS) {
+        ESP_LOGE(TAG, "bringup task creation failed");
+        return;
+    }
+
+    esp_timer_handle_t hb = nullptr;
+    esp_timer_create_args_t hb_args = {};
+    hb_args.callback = heartbeat_cb;
+    hb_args.name = "heartbeat";
+    if (esp_timer_create(&hb_args, &hb) != ESP_OK ||
+        esp_timer_start_periodic(hb, (uint64_t)config::HEARTBEAT_LED_PERIOD_MS * 1000) != ESP_OK) {
+        ESP_LOGE(TAG, "heartbeat timer failed");
+        return;
+    }
+    ESP_LOGI(TAG, "LED_OK blinks every %u ms; press the button to toggle LED_ERR",
+             (unsigned)config::HEARTBEAT_LED_PERIOD_MS);
 }
