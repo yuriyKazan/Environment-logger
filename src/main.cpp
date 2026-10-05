@@ -1,16 +1,22 @@
 #include "esp_log.h"
 #include "esp_system.h"
 
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+
 #include "bme280.h"
 #include "button.h"
 #include "config.h"
 #include "data_types.h"
+#include "ds3231.h"
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
 #include "i2c_bus.h"
 #include "led.h"
+#include "time_source.h"
 
 static const char *TAG = config::APP_NAME;
 
@@ -18,6 +24,8 @@ static I2cBus g_i2c;
 static Led g_led_ok(config::LED_OK_GPIO);
 static Led g_led_err(config::LED_ERR_GPIO);
 static Bme280 g_bme(g_i2c, config::I2C_ADDR_BME280);
+static Ds3231 g_rtc(g_i2c, config::I2C_ADDR_DS3231);
+static TimeSource g_time;
 static Button g_button(config::BUTTON_GPIO);
 static esp_timer_handle_t g_conv_timer;
 static QueueHandle_t g_isr_queue;
@@ -40,6 +48,30 @@ static bool was_found(const uint8_t *found, size_t n, uint8_t addr)
         }
     }
     return false;
+}
+
+// Parse __DATE__ ("Oct  5 2026") and __TIME__ ("11:42:51") of this build.
+static bool build_time(Ds3231Time &t)
+{
+    static const char *months = "JanFebMarAprMayJunJulAugSepOctNovDec";
+    const char *date = __DATE__;
+    const char *found = nullptr;
+    for (int i = 0; i < 12; i++) {
+        if (strncmp(date, months + 3 * i, 3) == 0) {
+            t.month = (uint8_t)(i + 1);
+            found = date;
+        }
+    }
+    if (found == nullptr) {
+        return false;
+    }
+    t.day = (uint8_t)atoi(date + 4);
+    t.year = (uint16_t)atoi(date + 7);
+    const char *tm_str = __TIME__;
+    t.hour = (uint8_t)atoi(tm_str);
+    t.minute = (uint8_t)atoi(tm_str + 3);
+    t.second = (uint8_t)atoi(tm_str + 6);
+    return true;
 }
 
 // Bring-up consumer of Q_ISR (Phases 2.3-2.4). Replaced by T1 in Phase 3.
@@ -74,7 +106,12 @@ static void bringup_task(void *)
             Bme280Sample sample;
             esp_err_t err = g_bme.read(sample);
             if (err == ESP_OK) {
-                ESP_LOGI(TAG, "T=%.2f C  H=%.1f %%  P=%.1f hPa", sample.temp_c, sample.hum_pct, sample.press_hpa);
+                bool trusted = false;
+                const time_t now = g_time.now(&trusted);
+                struct tm tmv;
+                gmtime_r(&now, &tmv);
+                ESP_LOGI(TAG, "[%02d:%02d:%02d%s] T=%.2f C  H=%.1f %%  P=%.1f hPa", tmv.tm_hour, tmv.tm_min,
+                         tmv.tm_sec, trusted ? "" : " untrusted", sample.temp_c, sample.hum_pct, sample.press_hpa);
             } else {
                 ESP_LOGE(TAG, "BME280 read failed: %s", esp_err_to_name(err));
             }
@@ -167,6 +204,26 @@ extern "C" void app_main(void)
         ESP_LOGE(TAG, "BME280 init failed");
         return;
     }
+
+    if (g_rtc.init() != ESP_OK) {
+        ESP_LOGE(TAG, "DS3231 init failed");
+        return;
+    }
+    Ds3231Reading rtc;
+    if (g_rtc.read(rtc) == ESP_OK) {
+        ESP_LOGI(TAG, "RTC %04u-%02u-%02u %02u:%02u:%02u: %s", rtc.time.year, rtc.time.month, rtc.time.day,
+                 rtc.time.hour, rtc.time.minute, rtc.time.second, rtc_status_name(rtc.status));
+        Ds3231Time bt;
+        if (config::RTC_SET_FROM_BUILD_TIME_IF_INVALID && rtc.status != RtcStatus::Valid && build_time(bt)) {
+            ESP_LOGW(TAG, "setting RTC from build time");
+            if (g_rtc.set_time(bt) != ESP_OK) {
+                ESP_LOGE(TAG, "RTC set_time failed");
+            }
+        }
+    } else {
+        ESP_LOGE(TAG, "RTC read failed");
+    }
+    g_time.init(g_rtc);
 
     esp_timer_handle_t tick = nullptr;
     esp_timer_create_args_t conv_args = {};

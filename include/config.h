@@ -40,6 +40,11 @@ inline constexpr size_t I2C_SCAN_MAX_FOUND = 16;
 inline constexpr uint64_t BME280_CONVERSION_US = 10 * 1000;
 inline constexpr uint32_t MEASURE_INTERVAL_MS = 5000;   // time between measurements
 
+// ---- RTC ----
+// Bring-up helper: if the DS3231 time is not valid at boot, set it to the firmware build time
+// (local time of the build machine, treated as UTC). Leave false to test the invalid-time fallback.
+inline constexpr bool RTC_SET_FROM_BUILD_TIME_IF_INVALID = false;
+
 // ---- LEDs and button ----
 inline constexpr gpio_num_t LED_OK_GPIO = GPIO_NUM_4;
 inline constexpr gpio_num_t LED_ERR_GPIO = GPIO_NUM_5;
