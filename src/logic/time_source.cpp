@@ -36,6 +36,17 @@ esp_err_t TimeSource::init(Ds3231 &rtc)
     return ESP_OK;
 }
 
+time_t TimeSource::resolve(esp_err_t read_err, const Ds3231Reading &reading, bool *trusted)
+{
+    const bool ok = (read_err == ESP_OK && reading.status == RtcStatus::Valid);
+    trusted_ = ok;
+    rtc_status_ = (read_err == ESP_OK) ? reading.status : RtcStatus::InvalidFields;
+    if (trusted != nullptr) {
+        *trusted = ok;
+    }
+    return ok ? ds3231_to_time_t(reading.time) : time(nullptr);
+}
+
 time_t TimeSource::now(bool *trusted) const
 {
     if (trusted != nullptr) {
