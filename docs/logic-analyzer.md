@@ -1,31 +1,63 @@
 # Logic analyzer captures
 
-Captured with an 8-channel 24 MHz logic analyzer (a "Saleae clone") and Saleae Logic 2. Connections: Channel 0 to SDA (GPIO8), Channel 1 to SCL (GPIO9), GND to GND. Channel 2 is not connected.
+Captured with an 8-channel 24 MHz logic analyzer (a "Saleae clone") and Saleae Logic 2 with its I2C analyzer. Connections: Channel 0 to SDA (GPIO8), Channel 1 to SCL (GPIO9), GND to GND; Channel 2 is not connected. Raw exports of the decoded bus traffic are in [`img/logic-analyzer/`](img/logic-analyzer/) (`boot.csv`, `measurement.csv`, `nack-recovery.csv`); the numbers below come from `tools/analyze_i2c.py` run on those files.
 
-These captures show the **timing structure** of the I2C traffic: bursts, their spacing and the retry pattern. They were taken zoomed out, without the I2C protocol decoder, so individual bytes, addresses and ACK/NACK bits are **not** visible in them. The protocol level (addresses, register reads, `NACK` versus `ACK`) is documented from the firmware logs instead ([`logs/phase2-bringup.txt`](logs/phase2-bringup.txt), [`logs/phase4-i2c-recovery.txt`](logs/phase4-i2c-recovery.txt)).
+## 1. Board start: address scan and BME280 initialisation
 
-## 1. Board start: address scan and device initialisation
+![Chip ID read at start](img/logic-analyzer/i2c-boot-scan.png)
 
-![Boot scan](img/logic-analyzer/i2c-boot-scan.png)
+The screenshot shows the BME280 chip ID read during initialisation, decoded by the analyzer: `Write [0x76] + ACK`, register `0xD0 + ACK`, `Read [0x76] + ACK`, data `0x60 + NAK` (the NAK after the last byte is how a master ends a read). `0x60` is the BME280 chip ID. The SCL pulses in this zoom are about 2.5 us apart, which is 400 kHz.
 
-After reset the firmware probes every address from `0x08` to `0x77` at 100 kHz and then initialises the BME280 and the DS3231 at 400 kHz. In the capture this is a dense burst of activity on both lines that lasts about 25 ms, followed by shorter, sparser transactions. Both lines are active together, as expected for I2C.
+The address scan is quantified from `boot.csv`:
 
-## 2. Regular measurement cycle
+| Quantity | Value |
+|---|---|
+| Probed addresses | 112 (`0x08` to `0x77`), one address byte each |
+| Answered with ACK | 3: `0x50` (EEPROM on the DS3231 module), `0x68` (DS3231), `0x76` (BME280) |
+| Answered with NACK | 109 |
+| Address byte duration | 84.9 us (the IDF probe always runs at 100 kHz) |
+| Whole scan | 16.6 ms |
 
-![Measurement cycle](img/logic-analyzer/i2c-measurement-cycle.png)
+After the scan the firmware works at 400 kHz: the address byte of those transfers lasts 21.1 us, which is 4.02 times shorter than a probe, i.e. 400 kHz against 100 kHz. The initialisation then reads the chip ID (`0x60`), the 26 + 7 bytes of calibration data and writes `0xF5 = 0x00` and `0xF2 = 0x01`.
 
-One burst of I2C traffic per measurement. The analyzer measures 4.988 s between two consecutive cycles. The firmware interval is 5 s: the UART log shows 5.00 s +/- 7 ms between lines (see [`logs/phase3-pipeline.txt`](logs/phase3-pipeline.txt)), and the ESP32 timer is driven by a crystal, so the 0.24 % difference is most likely the time base of the low-cost analyzer, not the firmware. This is an interpretation, not a measurement of the analyzer's clock.
+## 2. One measurement cycle
 
-Between two cycles the bus is idle: the I2C phases of a cycle take about 1.8 ms of the 5 s (see [`measurements.md`](measurements.md)).
+![Start of a conversion](img/logic-analyzer/i2c-measurement-cycle1.png)
+![Reading the results](img/logic-analyzer/i2c-measurement-cycle2.png)
 
-## 3. SDA disconnected: three attempts, then recovery
+The first screenshot shows the two writes that start a forced-mode conversion: `0xF2 = 0x01` (humidity oversampling x1) and `0xF4 = 0x25` (temperature and pressure x1, forced mode). The second shows the reads about 10 ms later: the BME280 status (`0xF3`), its 8 data bytes (`0xF7`...), the DS3231 time registers (7 bytes from `0x00`) and its status register (`0x0F`).
 
-![NACK and recovery](img/logic-analyzer/i2c-nack-recovery.png)
+From `measurement.csv` (three consecutive cycles):
 
-The SDA wire between the board and the modules was disconnected while the firmware was running. In the failing cycle there is activity on SCL only (Channel 1), as a group of three thin marks about 100 ms apart: the three attempts of the retry policy (`I2C_MAX_ATTEMPTS` = 3, `I2C_RETRY_DELAY_MS` = 100 ms), with no answer on SDA. The cycles on both sides of the failure show normal activity on both channels, so the system carried on and recovered by itself.
+| Step | Bus time | Gap before it |
+|---|---|---|
+| Write `0xF2 0x01` to `0x76` | 72 us | |
+| Write `0xF4 0x25` to `0x76` | 72 us | 69 us |
+| Read BME280 status (1 byte) | 49 us | **10.26 ms** (the conversion wait) |
+| Read BME280 data (8 bytes) | 207 us | 0.15 ms |
+| Read DS3231 time (7 bytes) | 184 us | 0.21 ms |
+| Read DS3231 status (1 byte) | 49 us | 0.13 ms |
 
-The bus reset that follows the third attempt (a series of SCL pulses that releases a stuck SDA) happens within a few milliseconds of it, so it cannot be told apart from the third attempt at this time scale.
+- The cycles start 4.99974 s apart (4.988108 s, 9.987845 s, 14.987587 s), i.e. every 5 s as configured. (The gap from the end of one burst to the start of the next is 4.988 s because a burst itself lasts about 11.7 ms.)
+- The wait between the conversion start and the read is 10.26 ms: the 10 ms one-shot timer plus 0.26 ms of task latency. Nothing blocks during it.
+- Data on the wire: 0.63 ms of actual transfers per cycle (0.013 % of the 5 s). The firmware measured 534 us for "start" and 1230 us for "read" ([`measurements.md`](measurements.md)); the difference to the wire time (144 us and 489 us plus the gaps between the reads) is the driver and mutex overhead, and the read phase of 1.27 ms from the first read START to the last STOP matches the firmware figure.
+- The DS3231 bytes decode to a valid time: `0x40 0x33 0x23 0x01 0x05 0x10 0x26` is 23:33:40 on 05.10.2026, and the status register bit 7 (oscillator-stop flag) is 0.
 
-## What is still missing
+## 3. SDA disconnected: failed attempts
 
-Zoomed-in captures with the I2C decoder (START, address, ACK or NACK, data, STOP) of one scan probe and of one measurement cycle. They can be added to this document when the decoder can be used with this analyzer.
+![Failed attempts](img/logic-analyzer/i2c-nack-recovery.png)
+
+The SDA wire between the board and the modules was disconnected while the firmware was running; the analyzer's SDA probe stayed on the module side of the cut, so it sees SCL (driven by the board) but SDA never leaves the high level. With nothing pulling SDA low the decoder reads every frame as `0xFF + NAK`: no address is ever acknowledged. In `nack-recovery.csv`:
+
+- the normal cycles at 2.547 s and 7.547 s decode as in section 2;
+- the cycle at 12.547 s fails: three attempts at 12.547 s, 12.655 s and 12.762 s, **107.5 ms apart** (the 100 ms retry timer plus about 7.5 ms for the failing transfer), exactly the three attempts of the retry policy (`I2C_MAX_ATTEMPTS` = 3, `I2C_RETRY_DELAY_MS` = 100);
+- the cycle at 17.547 s fails as well: the cycles at 12.5 s and 17.5 s are the two that are missing before the next valid one at 22.546 s, so the wire was out for two cycles;
+- normal decoded traffic returns at 22.546 s.
+
+The firmware log of a similar test ([`logs/phase4-i2c-recovery.txt`](logs/phase4-i2c-recovery.txt)) shows the same 3 attempts, the bus reset and the recovery.
+
+In the screenshot a further short mark on SCL follows the third attempt after about 20 ms. That fits the clock pulses of the bus reset (`i2c_master_bus_reset()` clears a stuck bus with SCL pulses), but the decoder merges it into the last `0xFF + NAK` frame, so the capture does not let me confirm it pulse by pulse. The second failing cycle also shows one additional short frame about 4 ms before its first attempt that I cannot attribute to a specific firmware action.
+
+## What this proves, and what it does not
+
+It proves, on the real bus: the START / address / ACK / data / STOP structure of the traffic, NACK for the 109 unused addresses and ACK for the three devices, 400 kHz transfers, the 5 s cycle with the 10 ms conversion wait, and the retry spacing when the bus is broken. It does not show the individual SCL pulses of the bus reset.
