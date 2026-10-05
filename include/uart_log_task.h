@@ -15,6 +15,7 @@ public:
 private:
     static void task_entry(void *arg);
     void run();
+    void stall();
 
     QueueHandle_t log_queue_;
 };

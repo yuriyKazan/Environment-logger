@@ -20,6 +20,7 @@
 #include "led.h"
 #include "mqtt_publisher.h"
 #include "mqtt_task.h"
+#include "diagnostics_task.h"
 #include "error_counter.h"
 #include "sensor_task.h"
 #include "supervisor_task.h"
@@ -46,6 +47,7 @@ static MqttPublisher g_mqtt;
 static MqttTask *g_mqtt_task;  // needs Q_MQTT, created in app_main
 static SensorTask g_sensor_task(g_i2c_mutex, g_bme, g_rtc, g_time, g_errors);
 static SupervisorTask g_supervisor(g_i2c, g_i2c_mutex, g_led_ok, g_led_err, g_button, g_errors);
+static DiagnosticsTask g_diagnostics;
 static UartLogTask *g_uart_task;  // needs Q_LOG, created in app_main
 
 static const char *device_name(uint8_t addr)
@@ -159,6 +161,10 @@ extern "C" void app_main(void)
         g_button.init(g_err_queue) != ESP_OK) {
         ESP_LOGE(TAG, "task or button start failed");
         return;
+    }
+
+    if (config::DIAG_ENABLED && g_diagnostics.start() != ESP_OK) {
+        ESP_LOGW(TAG, "diagnostics task not started");  // not essential: the logger runs without it
     }
 
     // Network last and best effort: if anything fails here, the UART log keeps running.

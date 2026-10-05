@@ -58,6 +58,21 @@ inline constexpr float EMA_ALPHA = 0.2f;
 // (local time of the build machine, treated as UTC). Leave false to test the invalid-time fallback.
 inline constexpr bool RTC_SET_FROM_BUILD_TIME_IF_INVALID = false;
 
+// ---- Diagnostics and fault injection (measurement phase) ----
+// Diagnostics task: a periodic snapshot of heap, CPU load, per-task stack and state (see diagnostics_task.h).
+// Set DIAG_ENABLED to false for the final demo if the extra lines are not wanted.
+inline constexpr bool DIAG_ENABLED = true;
+inline constexpr uint32_t DIAG_PERIOD_S = 60;
+inline constexpr uint32_t DIAG_TASK_STACK = 4096;
+inline constexpr unsigned DIAG_TASK_PRIO = 1;               // lowest; not subscribed to the watchdog
+inline constexpr uint32_t DIAG_T1_STATS_CYCLES = 12;        // T1 logs its timing every 12 cycles (one minute)
+// Fault injection for the queue overflow test: when enabled, T2 stops reading Q_LOG for a while after
+// FAULT_STALL_UART_AFTER_ENTRIES entries, so the queue fills and the "Q_LOG full" policy can be observed.
+// T2 keeps feeding the watchdog while stalled. Must be false in normal use.
+inline constexpr bool FAULT_STALL_UART = false;
+inline constexpr uint32_t FAULT_STALL_UART_AFTER_ENTRIES = 3;
+inline constexpr uint32_t FAULT_STALL_UART_MS = 90 * 1000;
+
 // ---- LEDs and button ----
 inline constexpr gpio_num_t LED_OK_GPIO = GPIO_NUM_4;
 inline constexpr gpio_num_t LED_ERR_GPIO = GPIO_NUM_5;
