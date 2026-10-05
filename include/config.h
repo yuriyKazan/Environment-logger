@@ -34,6 +34,15 @@ inline constexpr uint8_t I2C_SCAN_FIRST = 0x08;
 inline constexpr uint8_t I2C_SCAN_LAST = 0x77;
 inline constexpr size_t I2C_SCAN_MAX_FOUND = 16;
 
+// ---- I2C error handling (T1 retries, T3 recovers) ----
+inline constexpr uint8_t I2C_MAX_ATTEMPTS = 3;              // measurement attempts per cycle before a bus reset
+inline constexpr uint32_t I2C_RETRY_DELAY_MS = 100;         // gap between attempts, a one-shot timer (never a delay)
+inline constexpr uint32_t RECOVERY_TIMEOUT_MS = 2000;       // how long T1 waits for T3's bus reset
+
+// ---- Supervisor (T3) and button gestures ----
+inline constexpr uint32_t SUPERVISOR_TICK_MS = 500;         // wake-up period: LED_OK blink (1 Hz) and, later, WDT feed
+inline constexpr uint32_t BUTTON_LONG_PRESS_MS = 3000;      // short press: clear the error counter; long: watchdog test
+
 // ---- BME280 measurement ----
 // Datasheet t_measure,max for T/P/H oversampling x1: 1.25 + 2.3 + (2.3 + 0.575) + (2.3 + 0.575) = 9.3 ms;
 // rounded up with margin. The wait is a one-shot timer, never a blocking delay.
@@ -54,16 +63,18 @@ inline constexpr gpio_num_t LED_OK_GPIO = GPIO_NUM_4;
 inline constexpr gpio_num_t LED_ERR_GPIO = GPIO_NUM_5;
 inline constexpr gpio_num_t BUTTON_GPIO = GPIO_NUM_6;       // active low, internal pull-up
 inline constexpr int64_t BUTTON_DEBOUNCE_US = 50 * 1000;    // edges closer than this are ignored
-inline constexpr uint32_t HEARTBEAT_LED_PERIOD_MS = 500;    // bring-up: LED_OK toggle period
 
 // ---- Queues, tasks, mutex ----
 inline constexpr size_t ISR_QUEUE_LEN = 8;                  // Q_ISR: timer/button events -> T1
 inline constexpr size_t LOG_QUEUE_LEN = 8;                  // Q_LOG: T1 -> T2
+inline constexpr size_t ERR_QUEUE_LEN = 8;                  // T3 queue: errors and button events
 inline constexpr size_t MQTT_QUEUE_LEN = 4;                 // Q_MQTT: T1 -> T4 (drops the oldest when full)
 inline constexpr uint32_t SENSOR_TASK_STACK = 4096;
 inline constexpr unsigned SENSOR_TASK_PRIO = 5;
 inline constexpr uint32_t UART_LOG_TASK_STACK = 4096;
 inline constexpr unsigned UART_LOG_TASK_PRIO = 4;
+inline constexpr uint32_t SUPERVISOR_TASK_STACK = 4096;
+inline constexpr unsigned SUPERVISOR_TASK_PRIO = 6;     // highest: must always be able to run the recovery
 inline constexpr uint32_t MQTT_TASK_STACK = 4096;
 inline constexpr unsigned MQTT_TASK_PRIO = 3;           // lowest: best effort, never competes with T1-T2
 inline constexpr uint32_t I2C_MUTEX_TIMEOUT_MS = 200;       // never wait for the bus forever

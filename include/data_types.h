@@ -4,16 +4,28 @@
 #include <cstdint>
 #include <ctime>
 
+// Events passed through queues. Which queue carries which type:
+//   T1 queue (sensor task):  Tick, ConversionDone, Retry, RecoveryDone, RecoveryTimeout, TestHang
+//   T3 queue (supervisor):   I2cFailure, MeasurementOk, Button, ButtonRelease, LongPressTimeout
 enum class IsrEventType : uint8_t {
-    Tick,            // measurement timer
-    ConversionDone,  // BME280 conversion time elapsed (one-shot timer)
-    Button,          // debounced button press
+    Tick,             // measurement timer
+    ConversionDone,   // BME280 conversion time elapsed (one-shot timer)
+    Retry,            // retry delay elapsed (one-shot timer)
+    RecoveryDone,     // T3 finished the bus reset; value = esp_err_t of the reset
+    RecoveryTimeout,  // T3 did not answer in time
+    TestHang,         // T3 asks T1 to hang on purpose (watchdog demonstration)
+    I2cFailure,       // T1 gave up after the retries; value = esp_err_t of the last failure
+    MeasurementOk,    // T1 completed a good measurement after an error
+    Button,           // debounced button press
+    ButtonRelease,    // debounced button release
+    LongPressTimeout, // the button has been held for BUTTON_LONG_PRESS_MS
 };
 
-// Item of Q_ISR: what happened and when (esp_timer time, microseconds).
+// Item of the event queues: what happened, when (esp_timer time, microseconds) and one value.
 struct IsrEvent {
     IsrEventType type;
     int64_t timestamp_us;
+    int32_t value = 0;
 };
 
 // LogEntry flags.
