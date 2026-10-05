@@ -1,0 +1,50 @@
+Phase 4.2 button gestures log (ESP32-S3-DevKitM-1, ESP-IDF 5.5.3)
+The button is a 3-pin module (VCC, GND, OUT) with an on-board pull-down: OUT is low at rest and high while pressed
+(config::BUTTON_PRESSED_LEVEL = 1). Short press: clear the error counter. Long press (3 s): watchdog test.
+Captured with: pio device monitor (COM4, 115200 8-N-1).
+
+=== Four short presses ===
+18:08:16.031 > [18:08:04] T:23.8 H:40% P:982 ERR:0
+18:08:17.962 > I (12400) T3: button: press event (button is pressed)
+18:08:18.084 > I (12520) T3: button: press event (button is pressed)
+18:08:20.962 > I (15400) T3: button: long-press timer after 3000 ms, button is released
+18:08:20.968 > I (15400) T3: button: error counter cleared
+18:08:21.030 > [18:08:09] T:23.8 H:40% P:982 ERR:0
+18:08:22.810 > I (17250) T3: button: press event (button is pressed)
+18:08:22.960 > I (17400) T3: button: release event (button is released), short press
+18:08:22.964 > I (17400) T3: button: error counter cleared
+18:08:26.029 > [18:08:14] T:23.8 H:40% P:982 ERR:0
+18:08:27.314 > I (21750) T3: button: press event (button is pressed)
+18:08:27.466 > I (21910) T3: button: release event (button is released), short press
+18:08:27.466 > I (21910) T3: button: error counter cleared
+18:08:28.083 > I (22530) T3: button: press event (button is pressed)
+18:08:28.193 > I (22630) T3: button: release event (button is released), short press
+18:08:28.198 > I (22630) T3: button: error counter cleared
+18:08:31.029 > [18:08:19] T:23.8 H:40% P:982 ERR:0
+
+Notes:
+- Four presses give four "error counter cleared" lines.
+- The first press was shorter than the 50 ms debounce quiet time, so its release event was filtered out. The long-press
+  timer then checked the pin after 3 s, found the button released and counted a short press. This fallback works but
+  reacts 3 s late for such very short taps (known limitation).
+- ERR was already 0 in this test, so it shows the gesture, not a non-zero counter being reset (that is covered by the
+  ErrorCounter unit test).
+
+=== One long press (button held for the whole time) ===
+18:09:16.024 > [18:09:04] T:23.8 H:40% P:982 ERR:0
+18:09:17.782 > I (72230) T3: button: press event (button is pressed)
+18:09:20.782 > I (75230) T3: button: long-press timer after 3000 ms, button is pressed
+18:09:20.788 > W (75230) T3: button: long press, watchdog test requested
+18:09:20.793 > E (75230) T1: TEST: hanging on purpose, the watchdog should reset the chip
+18:09:26.330 > I (80780) T3: button: release event (button is released), ignored (no press pending)
+18:09:31.015 > E (85460) task_wdt: Task watchdog got triggered. The following tasks/users did not reset the watchdog in time:
+18:09:31.015 > E (85460) task_wdt:  - T1_sensor (CPU 0)
+18:09:31.029 > E (85460) task_wdt: Tasks currently running:
+18:09:31.034 > E (85460) task_wdt: CPU 0: IDLE0
+18:09:31.034 > E (85460) task_wdt: CPU 1: IDLE1
+18:09:31.041 > E (85460) task_wdt: Aborting.
+
+Notes:
+- The long press fires exactly 3000 ms after the press while the button is still held.
+- The release that follows is ignored: the gesture was already handled.
+- The watchdog names T1_sensor about 10.2 s after the hang (75230 ms -> 85460 ms) and resets the chip.
