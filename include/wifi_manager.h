@@ -5,6 +5,7 @@
 // WIFI_SLOW_RETRY_MS (one-shot timer) for as long as needed: a logger that runs for hours must
 // reconnect when the access point comes back. Credentials come from include/secrets.h.
 
+#include <atomic>
 #include <cstdint>
 #include "esp_err.h"
 #include "esp_event.h"
@@ -28,8 +29,9 @@ private:
     static void event_handler(void *arg, esp_event_base_t base, int32_t id, void *data);
     static void retry_timer_cb(void *arg);
     void on_disconnected(uint8_t reason);
+    void connect();
 
-    volatile bool connected_ = false;
+    std::atomic<bool> connected_{false};
     uint8_t fast_retries_ = 0;
     esp_timer_handle_t retry_timer_ = nullptr;
     ConnectedCb on_got_ip_ = nullptr;

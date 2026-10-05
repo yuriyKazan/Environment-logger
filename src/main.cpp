@@ -164,8 +164,9 @@ extern "C" void app_main(void)
     // Network last and best effort: if anything fails here, the UART log keeps running.
     esp_err_t nvs = nvs_flash_init();
     if (nvs == ESP_ERR_NVS_NO_FREE_PAGES || nvs == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        nvs_flash_erase();
-        nvs = nvs_flash_init();
+        if (nvs_flash_erase() == ESP_OK) {
+            nvs = nvs_flash_init();
+        }
     }
     if (nvs != ESP_OK || g_mqtt.init() != ESP_OK || g_mqtt_task->start() != ESP_OK ||
         g_wifi.init(&MqttPublisher::on_wifi_connected, &g_mqtt) != ESP_OK) {

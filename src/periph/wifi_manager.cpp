@@ -88,7 +88,7 @@ void WifiManager::event_handler(void *arg, esp_event_base_t base, int32_t id, vo
     if (base == WIFI_EVENT) {
         switch (id) {
         case WIFI_EVENT_STA_START:
-            esp_wifi_connect();
+            self->connect();
             break;
         case WIFI_EVENT_STA_DISCONNECTED:
             self->on_disconnected(static_cast<const wifi_event_sta_disconnected_t *>(data)->reason);
@@ -101,7 +101,7 @@ void WifiManager::event_handler(void *arg, esp_event_base_t base, int32_t id, vo
         ESP_LOGI(TAG, "got IP " IPSTR, IP2STR(&event->ip_info.ip));
         self->connected_ = true;
         self->fast_retries_ = 0;
-        esp_timer_stop(self->retry_timer_);
+        (void)esp_timer_stop(self->retry_timer_);  // not running is fine
         if (self->on_got_ip_ != nullptr) {
             self->on_got_ip_(self->on_got_ip_arg_);
         }
@@ -115,15 +115,26 @@ void WifiManager::on_disconnected(uint8_t reason)
         fast_retries_++;
         ESP_LOGW(TAG, "disconnected, reason %u: %s; retry %u/%u", (unsigned)reason, reason_name(reason),
                  (unsigned)fast_retries_, (unsigned)config::WIFI_FAST_RETRIES);
-        esp_wifi_connect();
+        connect();
     } else if (!esp_timer_is_active(retry_timer_)) {
         ESP_LOGW(TAG, "still offline (reason %u: %s), next attempt in %u s", (unsigned)reason, reason_name(reason),
                  (unsigned)(config::WIFI_SLOW_RETRY_MS / 1000));
-        esp_timer_start_once(retry_timer_, (uint64_t)config::WIFI_SLOW_RETRY_MS * 1000);
+        if (esp_timer_start_once(retry_timer_, (uint64_t)config::WIFI_SLOW_RETRY_MS * 1000) != ESP_OK) {
+            ESP_LOGE(TAG, "retry timer could not start: no further attempts until the next event");
+        }
     }
 }
 
-void WifiManager::retry_timer_cb(void *)
+void WifiManager::connect()
 {
-    esp_wifi_connect();  // a failure raises WIFI_EVENT_STA_DISCONNECTED, which re-arms the timer
+    const esp_err_t err = esp_wifi_connect();
+    if (err != ESP_OK && err != ESP_ERR_WIFI_CONN) {  // ESP_ERR_WIFI_CONN: already connecting
+        ESP_LOGW(TAG, "esp_wifi_connect failed: %s", esp_err_to_name(err));
+    }
+}
+
+void WifiManager::retry_timer_cb(void *arg)
+{
+    // A failed attempt raises WIFI_EVENT_STA_DISCONNECTED, which re-arms the timer.
+    static_cast<WifiManager *>(arg)->connect();
 }

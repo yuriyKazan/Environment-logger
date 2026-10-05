@@ -37,7 +37,9 @@ void SupervisorTask::long_press_cb(void *arg)
 {
     auto *self = static_cast<SupervisorTask *>(arg);
     const IsrEvent ev = {IsrEventType::LongPressTimeout, esp_timer_get_time(), 0};
-    xQueueSend(self->queue_, &ev, 0);
+    if (xQueueSend(self->queue_, &ev, 0) != pdTRUE) {
+        ESP_LOGE(TAG, "T3 queue full: long-press timeout lost");  // the next press starts a new gesture
+    }
 }
 
 void SupervisorTask::run()
@@ -113,25 +115,29 @@ void SupervisorTask::on_measurement_ok()
 // press. The timer handler checks the pin level too, because a very short press loses its release.
 void SupervisorTask::on_button_press()
 {
-    ESP_LOGI(TAG, "button: press event (button is %s)", button_.is_pressed() ? "pressed" : "released");
+    ESP_LOGD(TAG, "button: press event (button is %s)", button_.is_pressed() ? "pressed" : "released");
     if (press_active_) {
         return;
     }
     press_active_ = true;
     press_started_us_ = esp_timer_get_time();
-    esp_timer_stop(long_press_timer_);
-    esp_timer_start_once(long_press_timer_, (uint64_t)config::BUTTON_LONG_PRESS_MS * 1000);
+    (void)esp_timer_stop(long_press_timer_);  // not running is fine
+    if (esp_timer_start_once(long_press_timer_, (uint64_t)config::BUTTON_LONG_PRESS_MS * 1000) != ESP_OK) {
+        ESP_LOGE(TAG, "long-press timer could not start: treating this press as short");
+        press_active_ = false;
+        short_press_action();
+    }
 }
 
 void SupervisorTask::on_button_release()
 {
-    ESP_LOGI(TAG, "button: release event (button is %s), %s", button_.is_pressed() ? "pressed" : "released",
+    ESP_LOGD(TAG, "button: release event (button is %s), %s", button_.is_pressed() ? "pressed" : "released",
              press_active_ ? "short press" : "ignored (no press pending)");
     if (!press_active_) {
         return;  // the long press was already handled
     }
     press_active_ = false;
-    esp_timer_stop(long_press_timer_);
+    (void)esp_timer_stop(long_press_timer_);
     short_press_action();
 }
 
@@ -140,7 +146,7 @@ void SupervisorTask::on_long_press_timeout()
     if (!press_active_) {
         return;
     }
-    ESP_LOGI(TAG, "button: long-press timer after %lld ms, button is %s", (long long)((esp_timer_get_time() - press_started_us_) / 1000),
+    ESP_LOGD(TAG, "button: long-press timer after %lld ms, button is %s", (long long)((esp_timer_get_time() - press_started_us_) / 1000),
              button_.is_pressed() ? "pressed" : "released");
     press_active_ = false;
     if (button_.is_pressed()) {

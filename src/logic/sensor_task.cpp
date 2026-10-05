@@ -77,7 +77,10 @@ void SensorTask::recovery_timeout_cb(void *arg) { static_cast<SensorTask *>(arg)
 void SensorTask::post(IsrEventType type)
 {
     const IsrEvent ev = {type, esp_timer_get_time(), 0};
-    xQueueSend(queue_, &ev, 0);
+    if (xQueueSend(queue_, &ev, 0) != pdTRUE) {
+        dropped_events_++;  // a timer event is lost only if T1 is badly behind; the next tick starts over
+        ESP_LOGW(TAG, "event queue full, timer event dropped (total %u)", (unsigned)dropped_events_);
+    }
 }
 
 void SensorTask::notify_supervisor(IsrEventType type, int32_t value)
@@ -236,7 +239,7 @@ void SensorTask::on_recovery_done(const IsrEvent &ev)
     if (state_ != State::Recovery) {
         return;
     }
-    esp_timer_stop(recovery_timer_);
+    (void)esp_timer_stop(recovery_timer_);  // ESP_ERR_INVALID_STATE only means it had already fired
     if (ev.value == ESP_OK) {
         ESP_LOGI(TAG, "bus reset done, the next cycle will try again");
     } else {
@@ -291,7 +294,7 @@ void SensorTask::publish(const LogEntry &entry)
     // gets the freshest data. T1 is the only producer, so removing one item makes room.
     if (xQueueSend(mqtt_queue_, &entry, 0) != pdTRUE) {
         LogEntry oldest;
-        xQueueReceive(mqtt_queue_, &oldest, 0);
+        (void)xQueueReceive(mqtt_queue_, &oldest, 0);  // if T4 emptied the queue meanwhile, there is room anyway
         dropped_mqtt_++;
         if (xQueueSend(mqtt_queue_, &entry, 0) != pdTRUE) {
             ESP_LOGW(TAG, "Q_MQTT still full, entry dropped");

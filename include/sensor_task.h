@@ -83,5 +83,6 @@ private:
     Ema ema_h_;
     Ema ema_p_;
     uint32_t dropped_log_ = 0;
+    uint32_t dropped_events_ = 0;
     uint32_t dropped_mqtt_ = 0;
 };

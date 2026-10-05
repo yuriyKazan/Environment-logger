@@ -2,6 +2,8 @@
 // Transport layer: thin wrapper over the ESP-IDF MQTT client. Publish only (no subscriptions).
 // Reconnection to the broker is handled by the esp-mqtt stack itself.
 
+#include <atomic>
+
 #include "esp_err.h"
 #include "mqtt_client.h"
 
@@ -30,6 +32,6 @@ private:
     static void event_handler(void *arg, esp_event_base_t base, int32_t id, void *data);
 
     esp_mqtt_client_handle_t client_ = nullptr;
-    volatile bool connected_ = false;
+    std::atomic<bool> connected_{false};
     bool started_ = false;
 };
