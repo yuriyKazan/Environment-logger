@@ -44,7 +44,7 @@ inline constexpr uint32_t MEASURE_INTERVAL_MS = 5000;   // time between measurem
 // alpha = 0.2 at a 5 s period gives a time constant of 22 s (see include/ema.h).
 inline constexpr float EMA_ALPHA = 0.2f;
 // Temporary experiment: also print CSV lines with alpha = 0.05 / 0.2 / 0.5 side by side.
-inline constexpr bool EMA_EXPERIMENT_LOG = true;
+inline constexpr bool EMA_EXPERIMENT_LOG = false;
 inline constexpr float EMA_EXPERIMENT_ALPHAS[3] = {0.05f, 0.2f, 0.5f};
 
 // ---- RTC ----
