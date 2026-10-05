@@ -24,6 +24,7 @@
 #include "freertos/queue.h"
 #include "i2c_mutex.h"
 #include "time_source.h"
+#include "timing_stats.h"
 
 class SensorTask {
 public:
@@ -60,6 +61,7 @@ private:
     void finish_failed_cycle();
     void test_hang();
     void publish(const LogEntry &entry);
+    void record_cycle_done();
     void notify_supervisor(IsrEventType type, int32_t value);
 
     I2cMutex &i2c_mutex_;
@@ -82,6 +84,12 @@ private:
     Ema ema_t_;
     Ema ema_h_;
     Ema ema_p_;
+    // Timing of the critical sections, in microseconds; logged and reset every DIAG_T1_STATS_CYCLES cycles.
+    TimingStats start_stats_;   // mutex wait + BME280 start transaction
+    TimingStats read_stats_;    // mutex wait + BME280 and DS3231 reads
+    TimingStats cycle_stats_;   // tick -> LogEntry published (includes the conversion wait)
+    int64_t cycle_start_us_ = 0;
+    uint32_t stats_cycles_ = 0;
     uint32_t dropped_log_ = 0;
     uint32_t dropped_events_ = 0;
     uint32_t dropped_mqtt_ = 0;

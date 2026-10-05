@@ -121,6 +121,7 @@ void SensorTask::on_tick()
         return;
     }
     attempt_ = 0;
+    cycle_start_us_ = esp_timer_get_time();
     begin_attempt();
 }
 
@@ -128,9 +129,13 @@ void SensorTask::begin_attempt()
 {
     attempt_++;
     esp_err_t err;
+    const int64_t t0 = esp_timer_get_time();
     {
         I2cLockGuard lock(i2c_mutex_, config::I2C_MUTEX_TIMEOUT_MS);
         err = lock.locked() ? bme_.start_measurement() : ESP_ERR_TIMEOUT;
+    }
+    if (err == ESP_OK) {
+        start_stats_.add((uint32_t)(esp_timer_get_time() - t0));
     }
     if (err != ESP_OK) {
         attempt_failed(err, "BME280 start");
@@ -155,6 +160,7 @@ void SensorTask::on_conversion_done()
     Ds3231Reading rtc = {};
     esp_err_t bme_err;
     esp_err_t rtc_err = ESP_ERR_INVALID_STATE;
+    const int64_t t0 = esp_timer_get_time();
     {
         I2cLockGuard lock(i2c_mutex_, config::I2C_MUTEX_TIMEOUT_MS);
         if (lock.locked()) {
@@ -166,6 +172,7 @@ void SensorTask::on_conversion_done()
             bme_err = ESP_ERR_TIMEOUT;
         }
     }
+    const int64_t t1 = esp_timer_get_time();
     if (bme_err != ESP_OK) {
         attempt_failed(bme_err, "BME280 read");
         return;
@@ -179,6 +186,8 @@ void SensorTask::on_conversion_done()
         attempt_failed(ESP_ERR_INVALID_RESPONSE, "BME280 data");
         return;
     }
+
+    read_stats_.add((uint32_t)(t1 - t0));
 
     // Success: filter, timestamp, publish.
     state_ = State::Idle;
@@ -199,6 +208,27 @@ void SensorTask::on_conversion_done()
         notify_supervisor(IsrEventType::MeasurementOk, 0);
     }
     publish(entry);
+    record_cycle_done();
+}
+
+// Timing of a successful cycle: log min/avg/max once a minute and start over.
+void SensorTask::record_cycle_done()
+{
+    cycle_stats_.add((uint32_t)(esp_timer_get_time() - cycle_start_us_));
+    if (++stats_cycles_ < config::DIAG_T1_STATS_CYCLES) {
+        return;
+    }
+    if (config::DIAG_ENABLED) {
+        ESP_LOGI(TAG, "timing over %u cycles, us min/avg/max: I2C start %u/%u/%u, I2C read %u/%u/%u, cycle %u/%u/%u",
+                 (unsigned)cycle_stats_.count(), (unsigned)start_stats_.min(), (unsigned)start_stats_.avg(),
+                 (unsigned)start_stats_.max(), (unsigned)read_stats_.min(), (unsigned)read_stats_.avg(),
+                 (unsigned)read_stats_.max(), (unsigned)cycle_stats_.min(), (unsigned)cycle_stats_.avg(),
+                 (unsigned)cycle_stats_.max());
+    }
+    start_stats_.reset();
+    read_stats_.reset();
+    cycle_stats_.reset();
+    stats_cycles_ = 0;
 }
 
 // One attempt failed: retry (bounded, after a timer) or, when the attempts are used up, ask T3 to reset the bus.
