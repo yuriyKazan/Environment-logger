@@ -32,11 +32,17 @@ inline int16_t s16le(const uint8_t *p) { return (int16_t)u16le(p); }
 
 }  // namespace
 
-Bme280::~Bme280()
+void Bme280::release()
 {
     if (dev_ != nullptr) {
         i2c_master_bus_rm_device(dev_);
+        dev_ = nullptr;
     }
+}
+
+Bme280::~Bme280()
+{
+    release();
 }
 
 esp_err_t Bme280::read_regs(uint8_t reg, uint8_t *buf, size_t len)
@@ -76,11 +82,13 @@ esp_err_t Bme280::init()
     err = read_regs(config::BME280_REG_CHIP_ID, &id, 1);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "chip ID read failed: %s", esp_err_to_name(err));
+        release();  // a failed init leaves nothing behind, so init() can be called again
         return err;
     }
     if (id != config::BME280_CHIP_ID) {
         ESP_LOGE(TAG, "unexpected chip ID 0x%02X (expected 0x%02X): wrong device or address", id,
                  config::BME280_CHIP_ID);
+        release();
         return ESP_ERR_NOT_FOUND;
     }
 
@@ -92,6 +100,7 @@ esp_err_t Bme280::init()
     }
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "calibration read failed: %s", esp_err_to_name(err));
+        release();
         return err;
     }
 
@@ -121,6 +130,7 @@ esp_err_t Bme280::init()
     }
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "configuration failed: %s", esp_err_to_name(err));
+        release();
         return err;
     }
     ESP_LOGI(TAG, "ready at 0x%02X (chip ID 0x%02X, forced mode, oversampling x1)", addr_, id);

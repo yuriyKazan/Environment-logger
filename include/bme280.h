@@ -48,6 +48,7 @@ private:
         int8_t H6;
     };
 
+    void release();
     esp_err_t read_regs(uint8_t reg, uint8_t *buf, size_t len);
     esp_err_t write_reg(uint8_t reg, uint8_t value);
     int32_t compensate_temperature(int32_t adc_t);

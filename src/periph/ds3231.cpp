@@ -48,11 +48,17 @@ time_t ds3231_to_time_t(const Ds3231Time &t)
     return (time_t)(days * 86400 + t.hour * 3600 + t.minute * 60 + t.second);
 }
 
-Ds3231::~Ds3231()
+void Ds3231::release()
 {
     if (dev_ != nullptr) {
         i2c_master_bus_rm_device(dev_);
+        dev_ = nullptr;
     }
+}
+
+Ds3231::~Ds3231()
+{
+    release();
 }
 
 esp_err_t Ds3231::read_regs(uint8_t reg, uint8_t *buf, size_t len)
@@ -99,6 +105,7 @@ esp_err_t Ds3231::init()
     err = read_regs(REG_STATUS, &status, 1);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "status read failed: %s", esp_err_to_name(err));
+        release();  // a failed init leaves nothing behind, so init() can be called again
         return err;
     }
     ESP_LOGI(TAG, "ready at 0x%02X (OSF=%d)", addr_, (status & STATUS_OSF) ? 1 : 0);

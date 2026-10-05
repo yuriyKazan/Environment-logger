@@ -57,6 +57,7 @@ public:
     esp_err_t set_time(const Ds3231Time &t);
 
 private:
+    void release();
     esp_err_t read_regs(uint8_t reg, uint8_t *buf, size_t len);
     esp_err_t write_regs(uint8_t reg, const uint8_t *buf, size_t len);
 
