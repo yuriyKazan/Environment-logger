@@ -6,6 +6,7 @@
 #include "data_types.h"
 #include "esp_log.h"
 #include "log_format.h"
+#include "watchdog.h"
 
 static const char *TAG = "T2";
 
@@ -28,10 +29,13 @@ void UartLogTask::task_entry(void *arg)
 void UartLogTask::run()
 {
     char line[config::LOG_LINE_MAX];
+    wdt_subscribe_current_task("T2");
     for (;;) {
         LogEntry entry;
-        // Finite wait: the timeout branch is where the watchdog is fed in Phase 4.
-        if (xQueueReceive(log_queue_, &entry, pdMS_TO_TICKS(config::TASK_WAIT_MS)) != pdTRUE) {
+        // Finite wait, so the loop (and the watchdog feed) runs at least once per TASK_WAIT_MS.
+        const bool got_entry = xQueueReceive(log_queue_, &entry, pdMS_TO_TICKS(config::TASK_WAIT_MS)) == pdTRUE;
+        wdt_feed();
+        if (!got_entry) {
             continue;
         }
         if (format_log_line(entry, line, sizeof(line)) == 0) {

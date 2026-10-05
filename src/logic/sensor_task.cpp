@@ -4,6 +4,7 @@
 #include "esp_log.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
+#include "watchdog.h"
 
 static const char *TAG = "T1";
 
@@ -88,10 +89,13 @@ void SensorTask::notify_supervisor(IsrEventType type, int32_t value)
 
 void SensorTask::run()
 {
+    wdt_subscribe_current_task("T1");
     for (;;) {
         IsrEvent ev;
-        // Finite wait: the timeout branch is where the watchdog is fed (step 4.3).
-        if (xQueueReceive(queue_, &ev, pdMS_TO_TICKS(config::TASK_WAIT_MS)) != pdTRUE) {
+        // Finite wait, so the loop (and the watchdog feed) runs at least once per TASK_WAIT_MS.
+        const bool got_event = xQueueReceive(queue_, &ev, pdMS_TO_TICKS(config::TASK_WAIT_MS)) == pdTRUE;
+        wdt_feed();
+        if (!got_event) {
             continue;
         }
         switch (ev.type) {
