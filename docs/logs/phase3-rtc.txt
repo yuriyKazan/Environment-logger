@@ -13,7 +13,7 @@ Result: the firmware detects the invalid time and flags it as untrusted instead 
 12:44:35.867 > I (375) main_task: Returned from app_main()
 
 === Run 2: time set from the build time, module powered off and on again ===
-Result: the backup battery (LIR2032) kept the clock; the system clock is set from the RTC and timestamps are trusted.
+Result: the backup battery (CR2032) kept the clock; the system clock is set from the RTC and timestamps are trusted.
 
 12:59:47.744 > I (285) env-logger: boot, IDF 5.5.3
 12:59:47.770 > I (315) env-logger: I2C scan (probe @ 100 kHz): 3 device(s)

@@ -48,3 +48,5 @@ Notes:
 - The long press fires exactly 3000 ms after the press while the button is still held.
 - The release that follows is ignored: the gesture was already handled.
 - The watchdog names T1_sensor about 10.2 s after the hang (75230 ms -> 85460 ms) and resets the chip.
+
+Note on log levels: this log was captured with an earlier firmware build in which the button lines ("press event", "release event", "long-press timer after ...") were printed at INFO level. In the current code they are `ESP_LOGD`, and the default log level is INFO, so a fresh build does not print them. The behaviour is the same; set the log level to DEBUG (or change `ESP_LOGD` to `ESP_LOGI` in `src/reliability/supervisor_task.cpp`) to see them again.

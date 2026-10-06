@@ -48,3 +48,5 @@ What the log shows:
 - The long press was triggered by a short tap in these runs: the button module of this build reads low at rest and high when
   pressed, and the code still assumed the opposite (pressed = low). The button events in these runs were therefore inverted.
   This was fixed afterwards with config::BUTTON_PRESSED_LEVEL.
+
+Note on log levels: this log was captured with an earlier firmware build in which the button lines ("press event", "release event", "long-press timer after ...") were printed at INFO level. In the current code they are `ESP_LOGD`, and the default log level is INFO, so a fresh build does not print them. The behaviour is the same; set the log level to DEBUG (or change `ESP_LOGD` to `ESP_LOGI` in `src/reliability/supervisor_task.cpp`) to see them again.

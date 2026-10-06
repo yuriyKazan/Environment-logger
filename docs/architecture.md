@@ -73,7 +73,6 @@ stateDiagram-v2
     [*] --> Idle
     Idle --> WaitConversion: Tick, conversion started
     Idle --> WaitRetry: Tick, start failed (attempt below 3)
-    Idle --> Recovery: Tick, start failed (attempt 3)
     WaitConversion --> Idle: read ok and sample plausible
     WaitConversion --> WaitRetry: read failed or sample rejected (attempt below 3)
     WaitConversion --> Recovery: read failed or sample rejected (attempt 3)
@@ -119,7 +118,7 @@ The button is a 3-pin module with an on-board pull-down: low at rest, high when 
 
 The course documents set both the timeout and the interval to 5 s, which would reset the system on a normal cycle. Here the feed is decoupled from the measurement interval, and the timeout is far longer than the longest legal pause: the worst case between two feeds of T1 is about 1.6 s (see [`defensive-review.md`](defensive-review.md)). A task that blocks anywhere else stops feeding, and the watchdog names it and resets the chip within 10 s ([`logs/phase4-wdt.txt`](logs/phase4-wdt.txt)).
 
-At boot `esp_reset_reason()` is logged first; a watchdog, panic or brownout reset is reported as an error, so a previous hang is visible after the restart.
+At boot `esp_reset_reason()` is logged first; a watchdog reset is logged as an error; a panic, brownout or CPU lockup reset is logged as a warning; any other reason is logged as info. So a previous hang is visible after the restart.
 
 ## 7. Data structures, time and log format
 

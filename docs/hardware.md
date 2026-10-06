@@ -12,7 +12,7 @@ Target: ESP32-S3 (`esp32-s3-devkitm-1`), ESP-IDF 5.5.3.
 | LED_OK | System healthy indicator | GPIO out | via 220 Ω |
 | LED_ERR | Error / recovery indicator | GPIO out | via 220 Ω |
 | Button | Short press: clear the error counter. Long press (3 s): watchdog test | GPIO in + interrupt | 3-pin module (VCC, GND, OUT) with an on-board pull-down, pressed = high |
-| Timer | Measurement tick | `esp_timer` / `gptimer` | 5 s period |
+| Timer | Measurement tick | `esp_timer` | 5 s period |
 | Task WDT | Hang detection | `esp_task_wdt` | see [architecture](architecture.md) |
 
 No analog input: the photoresistor was intentionally dropped, because a temperature/humidity/pressure logger has no organic need for it (see [decisions](decisions.md)).

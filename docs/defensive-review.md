@@ -40,7 +40,7 @@ Worst case between two watchdog feeds of T1: the queue wait (1 s) plus the longe
 - DS3231 time is classified (oscillator-stop flag, default date 2000-01-01, out-of-range fields) and the log marks untrusted time (`!TIME`).
 - Calls whose result is intentionally ignored are marked `(void)` with the reason next to them: stopping a timer that may not be running (`esp_timer_stop`), and removing one old entry from a full queue (`xQueueReceive` on Q_MQTT).
 - A failed `init()` of the BME280 or DS3231 releases its I2C device handle, so the call can be repeated.
-- Nothing is left to `ESP_ERROR_CHECK` (which would abort); failures are logged and the system keeps running, with the UART log as the last thing to stop.
+- Nothing is left to `ESP_ERROR_CHECK` (which would abort); failures are logged and, once the tasks are running, the system keeps going with the UART log as the last thing to stop. The exception is a failed boot self-check, see section 6.
 
 ## 4. Shared state
 
@@ -70,4 +70,5 @@ ISR code uses only ISR-safe calls (`xQueueSendFromISR`, `esp_timer_get_time`, `g
 
 - A button tap shorter than the 50 ms debounce quiet time loses its release event; the long-press timer then counts it as a short press after 3 s.
 - A bus reset cannot revive a device that is permanently dead or unpowered; the cycle is logged as failed every time until it answers again.
-- Stack sizes (4096 bytes per task) were chosen with margin and verified by running, not by measuring the high-water mark.
+- If the BME280 or DS3231 is missing or does not initialise at power-on, the boot self-check logs an error and `app_main` returns: no tasks start, so there is no retry, no LED_ERR and no watchdog. The board stays silent until it is reset with the device connected. (A device that fails after a successful start is handled by the retry and bus-reset path.)
+- Stack sizes (4096 bytes per task) were verified by measuring the high-water mark ([`measurements.md`](measurements.md), and over a 10 h run in [`logs/phase7-long-run.txt`](logs/phase7-long-run.txt)): the smallest free stack over the 10 h run was 1584 B (`diag`), 1796 B (T1), 1876 B (T2), 2000 B (T4) and 3156 B (T3). T3 uses only 940 B and could have a 2048 B stack.

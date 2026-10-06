@@ -192,7 +192,6 @@ stateDiagram-v2
     [*] --> Idle
     Idle --> WaitConversion: Tick, conversion started
     Idle --> WaitRetry: Tick, start failed (attempt below 3)
-    Idle --> Recovery: Tick, start failed (attempt 3)
     WaitConversion --> Idle: read ok and sample plausible
     WaitConversion --> WaitRetry: read failed or sample rejected (attempt below 3)
     WaitConversion --> Recovery: read failed or sample rejected (attempt 3)
@@ -284,7 +283,7 @@ All numeric constants (pins, intervals, timeouts, queue lengths, priorities, sta
 ```
 
 - `T` temperature in °C, `H` relative humidity in %, `P` pressure in hPa, all EMA-filtered.
-- `ERR` is the number of failed measurement cycles since boot (saturating counter); a short button press resets it.
+- `ERR` is the number of failed measurement cycles since boot or since the last short button press (saturating counter).
 - Markers: ` !TIME` the timestamp does not come from a valid RTC (the internal clock is used); ` !SENS` the values are not from a successful read.
 
 **EMA:** `filtered = alpha * raw + (1 - alpha) * filtered`, `alpha` = 0.2. At a 5 s period this is a time constant of 22 s: a short disturbance is attenuated to about half or two thirds, a single outlier passes with only 20 % of its size, and the filter follows a real change in about a minute. 0.05 reacted to only a quarter of a disturbance and was still 4.3 %RH off two minutes later; 0.5 hardly filtered. The experiment, with its limits, is in [`docs/ema-experiment.md`](docs/ema-experiment.md).
@@ -374,12 +373,12 @@ All numbers were measured on the real board (ESP32-S3-DevKitM-1, ESP-IDF 5.5.3, 
 
 | Quantity | Value |
 |---|---|
-| Measurement cycle, tick to published entry | 11.9 / 12.0 / 12.4 ms (min / avg / max), of which 10 ms is the sensor conversion wait |
+| Measurement cycle, tick to published entry | 11.9 / 12.0 / 12.4 ms (min / avg / max over 12 cycles; over 10 h 11.9-13.5 ms, one outlier of 21.6 ms in another run), of which 10 ms is the sensor conversion wait |
 | I2C bus busy per cycle | about 1.8 ms of 5000 ms (0.035 %) |
 | CPU load | 0.7 % |
 | Free heap | 231.5-235.5 KB; lowest ever 226.9 KB after 10 h (230.6 KB at 60 s); free heap shows no downward trend |
 | Failed cycle (3 attempts + reset) | about 220 ms, the UART log keeps its 5 s cadence |
-| Stack, largest use of a 4096 B stack | T1: 2268 B used, 1828 B free |
+| Stack, largest use of a 4096 B stack (10 h minimum of free stack) | `diag`: 2512 B used, 1584 B free; T1: 2300 B used, 1796 B free |
 | Longest run | 10 h 18 min without a reset: 7425 log lines, all `ERR:0`, no `!SENS` / `!TIME` ([`phase7-long-run.txt`](docs/logs/phase7-long-run.txt)) |
 | Unit tests | 37, all on the PC |
 
@@ -406,7 +405,8 @@ Logs are excerpts; private data (SSID, IP, MAC) is replaced with placeholders.
 ## 13. Known issues and limitations
 
 - A button tap shorter than the 50 ms debounce quiet time loses its release event; the long-press timer then counts it as a short press after 3 s.
-- A bus reset cannot revive a device that is permanently dead or unpowered; every cycle is then logged as failed until it answers.
+- A bus reset cannot revive a device that is permanently dead or unpowered; every cycle is then logged as failed until it answers. This applies only to a device that failed after a successful start.
+- If the BME280 or DS3231 is missing or does not initialise at power-on, the boot self-check logs an error and `app_main` returns: no tasks start, so there is no retry, no LED_ERR and no watchdog. The board stays silent until it is reset or power-cycled with the device connected.
 - The DS3231 charging circuit is meant for a rechargeable LIR2032, but a non-rechargeable CR2032 is fitted (section 3). A non-rechargeable cell should not be charged: fine for a short demo, not for long unattended use.
 - The public MQTT broker has no authentication and no delivery guarantee (QoS 0); entries are dropped while disconnected.
 - 2.4 GHz Wi-Fi only.

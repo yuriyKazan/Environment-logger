@@ -10,6 +10,6 @@ const char *reset_reason_name(esp_reset_reason_t reason);
 // True for watchdog resets (task WDT, interrupt WDT, other WDT).
 bool reset_reason_is_watchdog(esp_reset_reason_t reason);
 
-// Read esp_reset_reason() and log it: INFO for a normal start, WARNING for an abnormal one
-// (watchdog, panic, brownout). Returns the reason.
+// Read esp_reset_reason() and log it: ERROR for a watchdog reset, WARNING for a panic, brownout or
+// CPU lockup, INFO for a normal start. Returns the reason.
 esp_reset_reason_t log_reset_reason();

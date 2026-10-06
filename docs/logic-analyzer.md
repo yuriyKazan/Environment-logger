@@ -38,10 +38,10 @@ From `measurement.csv` (three consecutive cycles):
 | Read DS3231 time (7 bytes) | 184 us | 0.21 ms |
 | Read DS3231 status (1 byte) | 49 us | 0.13 ms |
 
-- The cycles start 4.99974 s apart (4.988108 s, 9.987845 s, 14.987587 s), i.e. every 5 s as configured. (The gap from the end of one burst to the start of the next is 4.988 s because a burst itself lasts about 11.7 ms.)
+- The cycles start 4.99974 s apart: the three bursts start at 4.988108 s, 9.987845 s and 14.987587 s on the analyzer clock, i.e. every 5 s as configured. The idle gap between the end of one burst and the start of the next is about 4.988 s (not the same quantity), because a burst itself lasts about 11.7 ms.
 - The wait between the conversion start and the read is 10.26 ms: the 10 ms one-shot timer plus 0.26 ms of task latency. Nothing blocks during it.
-- Data on the wire: 0.63 ms of actual transfers per cycle (0.013 % of the 5 s). The firmware measured 534 us for "start" and 1230 us for "read" ([`measurements.md`](measurements.md)); the difference to the wire time (144 us and 489 us plus the gaps between the reads) is the driver and mutex overhead, and the read phase of 1.27 ms from the first read START to the last STOP matches the firmware figure.
-- The DS3231 bytes decode to a valid time: `0x40 0x33 0x23 0x01 0x05 0x10 0x26` is 23:33:40 on 05.10.2026, and the status register bit 7 (oscillator-stop flag) is 0.
+- Data on the wire: 0.63 ms of actual transfers per cycle (0.013 % of the 5 s). The firmware measured 534 us for "start" and 1230 us for "read" ([`measurements.md`](measurements.md)); the wire time is only 144 us for the "start" writes (two writes, 72 us each) and 489 us for the four reads (49 + 207 + 184 + 49 us); the rest of the firmware figures, together with the gaps between the transfers, is driver and mutex overhead, and the read phase of 1.27 ms from the first read START to the last STOP matches the firmware figure.
+- The DS3231 bytes decode to a valid time. In `measurement.csv` the seconds register reads `0x30`, `0x35`, `0x40` in the three cycles (23:28:30, 23:28:35, 23:28:40 on 05.10.2026), exactly 5 s apart. (The first read in `boot.csv`, `0x40 0x33 0x23 0x01 0x05 0x10 0x26`, is 23:33:40 on the same date.) The status register bit 7 (oscillator-stop flag) is 0.
 
 ## 3. SDA disconnected: failed attempts
 

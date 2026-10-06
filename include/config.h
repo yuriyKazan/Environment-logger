@@ -40,7 +40,7 @@ inline constexpr uint32_t I2C_RETRY_DELAY_MS = 100;         // gap between attem
 inline constexpr uint32_t RECOVERY_TIMEOUT_MS = 2000;       // how long T1 waits for T3's bus reset
 
 // ---- Supervisor (T3) and button gestures ----
-inline constexpr uint32_t SUPERVISOR_TICK_MS = 500;         // wake-up period: LED_OK blink (1 Hz) and, later, WDT feed
+inline constexpr uint32_t SUPERVISOR_TICK_MS = 500;         // wake-up period: LED_OK blink (1 Hz) and watchdog feed
 inline constexpr uint32_t BUTTON_LONG_PRESS_MS = 3000;      // short press: clear the error counter; long: watchdog test
 
 // ---- BME280 measurement ----
