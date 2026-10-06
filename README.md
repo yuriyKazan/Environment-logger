@@ -372,21 +372,22 @@ All numbers were measured on the real board (ESP32-S3-DevKitM-1, ESP-IDF 5.5.3, 
 | Measurement cycle, tick to published entry | 11.9 / 12.0 / 12.4 ms (min / avg / max), of which 10 ms is the sensor conversion wait |
 | I2C bus busy per cycle | about 1.8 ms of 5000 ms (0.035 %) |
 | CPU load | 0.7 % |
-| Free heap | 234.8 KB, lowest 226.6 KB after 77 minutes (no leak seen) |
+| Free heap | 231.5-235.5 KB; lowest ever 226.9 KB after 10 h (230.6 KB at 60 s); free heap shows no downward trend |
 | Failed cycle (3 attempts + reset) | about 220 ms, the UART log keeps its 5 s cadence |
 | Stack, largest use of a 4096 B stack | T1: 2268 B used, 1828 B free |
-| Longest observed run | 77 minutes, `ERR:0` around the snapshot |
+| Longest run | 10 h 18 min without a reset: 7425 log lines, all `ERR:0`, no `!SENS` / `!TIME` ([`phase7-long-run.txt`](docs/logs/phase7-long-run.txt)) |
 | Unit tests | 37, all on the PC |
 
 Cross-check with a logic analyzer ([`docs/logic-analyzer.md`](docs/logic-analyzer.md)): the cycles start 4.99974 s apart, the conversion wait on the wire is 10.26 ms, the read phase is 1.27 ms (firmware: 1.23 ms), the scan finds exactly `0x50`, `0x68` and `0x76`, and with SDA disconnected the three attempts are 107.5 ms apart.
 
-Not yet captured: a complete multi-hour log file; the 77-minute figure comes from the diagnostics snapshot.
+The long run also had two MQTT disconnects (10.3 s and 15.2 s), both recovered automatically while the UART log kept running. The raw capture is not committed; the evidence file is produced from it by `tools/summarize_long_run.py` with SSID, IP and MAC replaced.
 
 ## 12. Testing
 
 | Scenario | How | Result |
 |---|---|---|
 | Normal operation | 5+ minute run | `ERR:0`, 5 s cadence ([`phase3-pipeline.txt`](docs/logs/phase3-pipeline.txt)) |
+| Long run | 10 h 18 min, nobody touching the board | no reset, `ERR:0` throughout, flat heap ([`phase7-long-run.txt`](docs/logs/phase7-long-run.txt)) |
 | I2C failure and recovery | SDA wire pulled out and plugged back | 3 attempts, bus reset, automatic recovery ([`phase4-i2c-recovery.txt`](docs/logs/phase4-i2c-recovery.txt)) |
 | Watchdog | Long button press | Chip reset, task named, reset reason logged ([`phase4-wdt.txt`](docs/logs/phase4-wdt.txt)) |
 | RTC invalid | DS3231 never set (oscillator-stop flag set) | `!TIME` ([`phase3-rtc.txt`](docs/logs/phase3-rtc.txt)) |
@@ -404,7 +405,7 @@ Logs are excerpts; private data (SSID, IP, MAC) is replaced with placeholders.
 - The public MQTT broker has no authentication and no delivery guarantee (QoS 0); entries are dropped while disconnected.
 - 2.4 GHz Wi-Fi only.
 - The SCL pulses of the bus reset were not individually confirmed on the logic analyzer (the decoder merges them into the last NAK frame).
-- No long-run log file for several hours yet.
+- The long run is one 10-hour capture on USB power in one room; it is not a temperature-cycling or brown-out test.
 - `sys_evt` (an ESP-IDF task that runs the Wi-Fi event handler) has only 576 B of stack free; it is the one to watch if more work is added to the Wi-Fi/MQTT callbacks.
 
 ## 14. What I would improve
@@ -414,7 +415,7 @@ Logs are excerpts; private data (SSID, IP, MAC) is replaced with placeholders.
 - Light Sleep or Deep Sleep for a battery-powered version, with the UART and Wi-Fi handled around the sleep.
 - A hardware I2C bus-recovery path that can also power-cycle the sensors through a GPIO-switched supply.
 - Time synchronisation of the RTC over SNTP when the network is available.
-- A multi-hour soak test with automatic log capture in CI-style scripts.
+- A soak test across temperature changes and with a deliberately unstable power supply.
 
 ## 15. Self-check against the checklist
 

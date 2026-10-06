@@ -1,0 +1,155 @@
+Phase 7 long-run log (ESP32-S3-DevKitM-1, ESP-IDF 5.5.3)
+Captured with: pio device monitor -f log2file (115200 8-N-1), board powered over USB, nobody touched it.
+Produced by tools/summarize_long_run.py from the raw capture; private data (SSID, IP, MAC) is replaced with placeholders.
+The raw file is not committed: 18042 non-empty lines (36086 with the empty lines the capture inserts), about 1.2 MB.
+
+=== Summary computed over the whole file ===
+Last diagnostics snapshot: uptime 37081 s = 10 h 18 min
+First / last log line time: 00:05:51 / 10:24:33 (DS3231)
+Log lines: 7425; expected for that uptime at one per 5 s: about 7416
+Spacing between consecutive lines (RTC seconds): {5: 7422, 6: 2}
+Lines that came 6 s after the previous one (RTC has whole-second resolution): non-empty line 6677 ([03:52:27]), non-empty line 13910 ([08:01:53])
+ERR values seen: {'0': 7425}; lines with !SENS or !TIME: 0
+Boot banners (rst:0x...): 1; reset-reason lines: 1; watchdog, panic, backtrace or abort messages: 0
+Warnings and errors, excluding the two boot-time notices: 10 lines (listed below)
+Diagnostics snapshots: 617 (one per minute)
+Free heap: min 231540 B, max 235464 B; first 235272 B (60 s), last 234868 B
+Lowest-ever free heap: 230624 B at 60 s, 226872 B at the end (difference 3752 B)
+CPU load: min 0.5 %, max 0.8 %, mean 0.63 %
+Smallest free stack seen per task (bytes): IDLE0 740, IDLE1 812, T1_sensor 1796, T2_uart 1876, T3_supervisor 3156, T4_mqtt 2000, diag 1584, esp_timer 2940, ipc0 396, ipc1 532, mqtt_task 3748, sys_evt 576, tiT 1752, wifi 3444
+T1 timing reports: 618; I2C start min/max 527/1832 us, I2C read 1203/2751 us, cycle 11901/13470 us
+MQTT disconnects: 2; at 19797 s uptime, reconnected after 10.3 s; at 30409 s uptime, reconnected after 15.2 s
+
+=== Boot sequence from app_main (bootloader and ROM lines omitted) ===
+I (401) main_task: Calling app_main()
+I (401) env-logger: boot, IDF 5.5.3
+I (401) reset: reset reason: power-on
+W (401) i2c.master: Please check pull-up resistances whether be connected properly. Otherwise unexpected behavior would happen. For more detailed information, please read docs
+I (431) env-logger: I2C scan (probe @ 100 kHz): 3 device(s)
+I (431) env-logger:   0x50 (AT24C32 EEPROM on DS3231 module)
+I (431) env-logger:   0x68 (DS3231)
+I (431) env-logger:   0x76 (BME280)
+I (441) bme280: ready at 0x76 (chip ID 0x60, forced mode, oversampling x1)
+I (441) ds3231: ready at 0x68 (OSF=0)
+I (451) env-logger: RTC 2026-10-06 00:05:46: valid
+I (451) time_source: system clock set from RTC: 2026-10-06 00:05:46
+I (481) pp: pp rom version: e7ae62f
+I (481) net80211: net80211 rom version: e7ae62f
+I (491) wifi:wifi driver task: 3fcb13b0, prio:23, stack:6656, core=0
+I (501) wifi:wifi firmware version: 4df78f2
+I (501) wifi:wifi certification version: v7.0
+I (501) wifi:config NVS flash: enabled
+I (501) wifi:config nano formatting: disabled
+I (501) wifi:Init data frame dynamic rx buffer num: 32
+I (511) wifi:Init static rx mgmt buffer num: 5
+I (511) wifi:Init management short buffer num: 32
+I (511) wifi:Init dynamic tx buffer num: 32
+I (521) wifi:Init static tx FG buffer num: 2
+I (521) wifi:Init static rx buffer size: 1600
+I (531) wifi:Init static rx buffer num: 10
+I (531) wifi:Init dynamic rx buffer num: 32
+I (531) wifi_init: rx ba win: 6
+I (541) wifi_init: accept mbox: 6
+I (541) wifi_init: tcpip mbox: 32
+I (541) wifi_init: udp mbox: 6
+I (551) wifi_init: tcp mbox: 6
+I (551) wifi_init: tcp tx win: 5760
+I (551) wifi_init: tcp rx win: 5760
+I (551) wifi_init: tcp mss: 1440
+I (561) wifi_init: WiFi IRAM OP enabled
+I (561) wifi_init: WiFi RX IRAM OP enabled
+I (571) phy_init: phy_version 711,97bcf0a2,Aug 25 2025,19:04:10
+I (611) wifi:mode : sta (<mac>)
+I (611) wifi:enable tsf
+I (611) wifi: connecting to SSID "<ssid>"
+I (611) env-logger: running: one log line every 5000 ms
+I (611) main_task: Returned from app_main()
+I (621) wifi:new:<4,0>, old:<1,0>, ap:<255,255>, sta:<4,0>, prof:1, snd_ch_cfg:0x0
+I (631) wifi:state: init -> auth (0xb0)
+I (651) wifi:state: auth -> assoc (0x0)
+I (661) wifi:state: assoc -> run (0x10)
+I (691) wifi:<ba-add>idx:0 (ifx:0, <mac>), tid:5, ssn:0, winSize:64
+I (781) wifi:connected with <ssid>, aid = 3, channel 4, BW20, bssid = <mac>
+I (781) wifi:security: WPA2-PSK, phy: bgn, rssi: -70
+I (781) wifi:pm start, type: 1
+I (791) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us
+I (791) wifi:set rx beacon pti, rx_bcn_pti: 0, bcn_timeout: 25000, mt_pti: 0, mt_time: 10000
+I (831) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+I (1821) esp_netif_handlers: sta ip: <ip>, mask: <ip>, gw: <ip>
+I (1821) wifi: got IP <ip>
+I (1821) mqtt: connecting to mqtt://broker.hivemq.com
+I (1901) wifi:<ba-add>idx:1 (ifx:0, <mac>), tid:0, ssn:1, winSize:64
+I (1961) mqtt: connected to the broker
+[00:05:51] T:22.0 H:44% P:982 ERR:0
+
+=== Warnings and errors with context ===
+---
+[05:35:37] T:21.6 H:43% P:981 ERR:0
+[05:35:42] T:21.6 H:43% P:981 ERR:0
+E (19797481) mqtt_client: esp_mqtt_handle_transport_read_error: transport_read(): EOF
+E (19797481) mqtt_client: esp_mqtt_handle_transport_read_error: transport_read() error: errno=128
+W (19797481) mqtt: client error
+E (19797491) mqtt_client: mqtt_process_receive: mqtt_message_receive() returned -2
+W (19797491) mqtt: disconnected from the broker
+I (19800471) T1: timing over 12 cycles, us min/avg/max: I2C start 527/534/538, I2C read 1206/1232/1421, cycle 11906/11941/12194
+[05:35:47] T:21.6 H:43% P:981 ERR:0
+[05:35:52] T:21.6 H:43% P:981 ERR:0
+I (19807821) mqtt: connected to the broker
+[05:35:57] T:21.6 H:43% P:981 ERR:0
+---
+[08:32:28] T:21.5 H:43% P:981 ERR:0
+[08:32:33] T:21.5 H:43% P:981 ERR:0
+E (30408831) mqtt_client: esp_mqtt_handle_transport_read_error: transport_read(): EOF
+E (30408831) mqtt_client: esp_mqtt_handle_transport_read_error: transport_read() error: errno=128
+W (30408841) mqtt: client error
+E (30408841) mqtt_client: mqtt_process_receive: mqtt_message_receive() returned -2
+W (30408851) mqtt: disconnected from the broker
+[08:32:38] T:21.5 H:43% P:981 ERR:0
+[08:32:43] T:21.5 H:43% P:981 ERR:0
+I (30420471) T1: timing over 12 cycles, us min/avg/max: I2C start 531/535/541, I2C read 1204/1215/1286, cycle 11904/11920/12001
+[08:32:48] T:21.5 H:43% P:981 ERR:0
+I (30424051) mqtt: connected to the broker
+[08:32:53] T:21.5 H:43% P:981 ERR:0
+
+=== First diagnostics snapshot ===
+I (60461) diag: uptime 60 s, heap free 235272 B (lowest 230624 B), CPU load 0.8 % (2 cores averaged), 15 tasks
+I (60461) diag:   diag             X prio  1  stack free  3056 B  cpu   0.0 %
+I (60461) diag:   IDLE1            R prio  0  stack free   812 B  cpu  99.8 %
+I (60471) diag:   IDLE0            R prio  0  stack free   740 B  cpu  98.5 %
+I (60491) diag:   T2_uart          B prio  4  stack free  1876 B  cpu   0.0 %
+I (60501) diag:   T4_mqtt          B prio  3  stack free  2000 B  cpu   0.1 %
+I (60501) diag:   tiT              B prio 18  stack free  1752 B  cpu   0.2 %
+I (60511) diag:   mqtt_task        B prio  5  stack free  3940 B  cpu   0.1 %
+I (60521) diag:   T3_supervisor    B prio  6  stack free  3156 B  cpu   0.0 %
+I (60521) diag:   T1_sensor        B prio  5  stack free  2708 B  cpu   0.0 %
+I (60531) diag:   ipc0             S prio  1  stack free   396 B  cpu   0.1 %
+I (60541) diag:   ipc1             S prio 24  stack free   532 B  cpu   0.1 %
+I (60551) diag:   sys_evt          B prio 20  stack free   576 B  cpu   0.0 %
+I (60551) diag:   wifi             B prio 23  stack free  3444 B  cpu   0.8 %
+I (60561) diag:   esp_timer        S prio 22  stack free  2940 B  cpu   0.0 %
+I (60571) diag:   Tmr Svc          B prio  1  stack free  1316 B  cpu   0.0 %
+
+=== Last diagnostics snapshot ===
+I (37082181) diag: uptime 37081 s, heap free 234868 B (lowest 226872 B), CPU load 0.6 % (2 cores averaged), 15 tasks
+I (37082181) diag:   diag             X prio  1  stack free  1584 B  cpu   0.2 %
+I (37082181) diag:   IDLE1            R prio  0  stack free   812 B  cpu  99.9 %
+I (37082191) diag:   IDLE0            R prio  0  stack free   740 B  cpu  98.8 %
+I (37082201) diag:   T3_supervisor    B prio  6  stack free  3156 B  cpu   0.0 %
+I (37082201) diag:   T1_sensor        B prio  5  stack free  1796 B  cpu   0.0 %
+I (37082211) diag:   T2_uart          B prio  4  stack free  1876 B  cpu   0.0 %
+I (37082221) diag:   T4_mqtt          B prio  3  stack free  2000 B  cpu   0.1 %
+I (37082231) diag:   mqtt_task        B prio  5  stack free  3748 B  cpu   0.1 %
+I (37082231) diag:   tiT              B prio 18  stack free  1752 B  cpu   0.1 %
+I (37082241) diag:   ipc0             S prio  1  stack free   396 B  cpu   0.0 %
+I (37082251) diag:   ipc1             S prio 24  stack free   532 B  cpu   0.0 %
+I (37082251) diag:   wifi             B prio 23  stack free  3444 B  cpu   0.6 %
+I (37082261) diag:   esp_timer        S prio 22  stack free  2940 B  cpu   0.0 %
+I (37082271) diag:   sys_evt          B prio 20  stack free   576 B  cpu   0.0 %
+I (37082281) diag:   Tmr Svc          B prio  1  stack free  1316 B  cpu   0.0 %
+
+=== Last 5 log lines of the capture ===
+[10:24:13] T:24.3 H:45% P:981 ERR:0
+[10:24:18] T:24.3 H:45% P:981 ERR:0
+[10:24:23] T:24.3 H:45% P:981 ERR:0
+[10:24:28] T:24.2 H:45% P:981 ERR:0
+[10:24:33] T:24.2 H:45% P:981 ERR:0

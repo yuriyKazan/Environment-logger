@@ -12,7 +12,7 @@ All numbers come from the firmware's own diagnostics (`DiagnosticsTask`, and the
 | I2C, read of BME280 and DS3231 (mutex wait + 4 transfers) | 1204 / 1230 / 1343 us | T1 timing |
 | Time the I2C bus is busy per cycle | about 1.8 ms of 5000 ms (0.035 %) | sum of the two lines above |
 | CPU load, both cores averaged | 0.7 % (target: below 70 %) | diagnostics, run-time counters |
-| Free heap / lowest since boot | 234.8 KB / 226.6 KB after 77 minutes | diagnostics |
+| Free heap / lowest since boot | 234.9 KB / 226.9 KB after 10 h 18 min | diagnostics, [`phase7-long-run.txt`](logs/phase7-long-run.txt) |
 | Number of tasks | 15 (4 application tasks, the rest are ESP-IDF system tasks) | diagnostics |
 
 In the second run (fault injection test, 60 s after boot) the numbers were the same: start 521/523/528 us, read 1200/1225/1454 us, one cycle took up to 21.6 ms (a single outlier, probably Wi-Fi activity), CPU load 0.9 %.
@@ -33,7 +33,20 @@ The rule of thumb used here is to enlarge a stack that has less than 128 B free:
 
 ## Long run
 
-The snapshot above was taken 4627 s (77 minutes) after the last boot, with `ERR:0` in the log lines around it, so the logger ran for more than an hour without a reset or an error. Heap use was steady: the lowest free heap of 226.6 KB after 77 minutes is only 2.6 KB below the value 60 s after boot (229.3 KB), which is the Wi-Fi/TLS start-up peak, not a leak. A complete long-run log file is still to be captured.
+One uninterrupted capture of 10 h 18 min (37081 s of uptime), board on USB power, nobody touching it. Evidence: [`logs/phase7-long-run.txt`](logs/phase7-long-run.txt), produced from the raw capture by `tools/summarize_long_run.py`.
+
+| Quantity | Value |
+|---|---|
+| Resets, watchdog, panic | none (one boot banner, reason power-on) |
+| Log lines | 7425, all `ERR:0`, no `!SENS` or `!TIME` |
+| Spacing of the lines (RTC seconds) | 5 s 7422 times, 6 s twice (03:52:27 and 08:01:53; the RTC has whole-second resolution, the cause was not investigated) |
+| Free heap | 231.5-235.5 KB; lowest ever 230.6 KB at 60 s and 226.9 KB at the end, i.e. 3.7 KB lower. The minimum fell in seven small steps (at 60, 120, 300, 9616, 14003, 15325 and 33055 s) and the free heap itself came back each time (235.3 KB at 60 s, 234.9 KB at the end), so this looks like short transient dips, not a leak; the cause of the dips was not investigated |
+| CPU load | 0.5-0.8 %, mean 0.63 % (617 snapshots) |
+| Smallest free stack, T1 / T2 / T3 / T4 | 1796 / 1876 / 3156 / 2000 B |
+| T1 cycle time over 618 reports | 11.9-13.5 ms |
+| MQTT disconnects | 2 (10.3 s and 15.2 s), both reconnected by themselves; the UART log kept its 5 s lines meanwhile |
+
+Free heap stayed inside a 4 KB band over the 617 minute-by-minute snapshots, with no downward trend.
 
 ## Is DMA appropriate?
 
