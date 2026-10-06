@@ -64,7 +64,7 @@ The course checklist has 42 items. An item is ticked only when an artifact exist
 
 | # | Item | Done | Evidence | Need it covers |
 |---|---|---|---|---|
-| 7.1 | Schematic | yes | `hardware/kicad/env-logger.kicad_sch`, exported to [`schematic/schematic.pdf`](schematic/schematic.pdf) and `schematic.png` | Document the wiring of the modules and the pins |
+| 7.1 | Schematic | yes | `hardware/kicad/env-logger.kicad_sch`, exported to [`schematic/schematic.pdf`](schematic/schematic.pdf) and `schematic.png`. ERC (`kicad-cli` 10.0.4, `sch erc --severity-all`): 0 errors, 0 warnings. Four checks are switched off in the project settings (global label used once, four connection points joined, SPICE model, footprint filters) | Document the wiring of the modules and the pins |
 | 7.2 | 2-layer PCB routed | **no** | Skipped on purpose: the logger is built from ready-made modules on a breadboard | A PCB is not needed to meet the project's goal |
 | 7.3 | Power filtering | **no** | Same as 7.2; no custom board, so nothing to filter on it | n/a |
 | 7.4 | Power and logic separated | **no** | Same as 7.2; one 3.3 V rail from the board | n/a |
