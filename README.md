@@ -108,7 +108,7 @@ Deliberately **not** included, with the reasons:
 - **Photoresistor / ADC (checklist 2.1):** a temperature, humidity and pressure logger has no organic need for light measurement. It was in the original brief; I dropped it after discussing it with the instructor, because adding a sensor only to cover a checklist item would make the design less coherent. The log format therefore has no `LUX` field.
 - **Light Sleep:** the board is powered over USB, so saving energy has no practical meaning here, and Light Sleep conflicts with the continuous Wi-Fi/MQTT link and with the UART log. See [`docs/decisions.md`](docs/decisions.md), item 10.
 - **DMA:** one cycle moves about 20 bytes over I2C and the bus is busy 0.035 % of the time; measured, DMA would gain nothing ([`docs/measurements.md`](docs/measurements.md)).
-- **Checklist 6.2 and 7.2-7.7:** not applicable to this design; the individual reasons are in [`docs/self-check.md`](docs/self-check.md) (see section 15).
+- **Checklist 6.2 and 7.2-7.7:** not applicable to this design; the reason for each item is in [`docs/self-check.md`](docs/self-check.md) (summary in [section 15](#15-self-check-against-the-checklist) of this README).
 
 ## 5. Architecture
 
@@ -262,7 +262,7 @@ sequenceDiagram
 
 ### UML class view
 
-The class diagram (tasks, drivers, mutex, data types and their dependencies) and the watchdog sequence diagram are in [`docs/architecture.md`](docs/architecture.md), sections 11 and 12, together with the full description of every design choice. The design decisions in "I chose X because Y; the alternative was Z" form are in [`docs/decisions.md`](docs/decisions.md).
+The class diagram (tasks, drivers, mutex, data types and their dependencies) and the watchdog sequence diagram are in section 11 of [`docs/architecture.md`](docs/architecture.md); the rest of that document describes every design choice in full. The design decisions in "I chose X because Y; the alternative was Z" form are in [`docs/decisions.md`](docs/decisions.md).
 
 ## 6. Interfaces
 
