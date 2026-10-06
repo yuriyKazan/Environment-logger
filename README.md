@@ -103,7 +103,7 @@ Deliberately **not** included, with the reasons:
 - **Photoresistor / ADC (checklist 2.1):** a temperature, humidity and pressure logger has no organic need for light measurement. It was in the original brief; I dropped it after discussing it with the instructor, because adding a sensor only to cover a checklist item would make the design less coherent. The log format therefore has no `LUX` field.
 - **Light Sleep:** the board is powered over USB, so saving energy has no practical meaning here, and Light Sleep conflicts with the continuous Wi-Fi/MQTT link and with the UART log. See [`docs/decisions.md`](docs/decisions.md), item 10.
 - **DMA:** one cycle moves about 20 bytes over I2C and the bus is busy 0.035 % of the time; measured, DMA would gain nothing ([`docs/measurements.md`](docs/measurements.md)).
-- **Checklist 6.2 and 7.2-7.7:** not applicable to this design; the individual reasons are in [`docs/self-check.md`](docs/self-check.md) once it is added (see section 15).
+- **Checklist 6.2 and 7.2-7.7:** not applicable to this design; the individual reasons are in [`docs/self-check.md`](docs/self-check.md) (see section 15).
 
 ## 5. Architecture
 
@@ -419,7 +419,7 @@ Logs are excerpts; private data (SSID, IP, MAC) is replaced with placeholders.
 
 ## 15. Self-check against the checklist
 
-The course checklist was filled in with a piece of evidence (code, log or screenshot) for every ticked item; items that do not fit this project are left unticked with a reason instead of being forced. The summary will be in [`docs/self-check.md`](docs/self-check.md). Current state: 27 of 42 items ticked, the remainder being documentation and presentation items still in progress or not applicable (section 4).
+The course checklist was filled in with a piece of evidence (code, log or measurement) for every ticked item; items that do not fit this project are left unticked with a reason instead of being forced. Current state: **30 of 42 items ticked (71 %)**; the four demonstration items are ticked at the live defence (34 of 42, 81 %), and the other eight (2.1, 6.2, 7.2-7.7) are deliberately not applicable, each with its reason. Details and the "need it covers" column: [`docs/self-check.md`](docs/self-check.md).
 
 ## 16. Technology stack, credits and license
 
