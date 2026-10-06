@@ -49,5 +49,5 @@ GPIO6 ------------------ OUT  (button module: VCC to 3V3, GND to GND, pressed = 
 Notes:
 - DS3231 needs a working backup battery. With a dead or missing battery it reports `2000-01-01 00:00:00`; the firmware must validate the timestamp before logging it.
 - I2C pull-ups are provided by the modules (BME280 10 kΩ, DS3231 4.7 kΩ per line), giving about 3.2 kΩ per line in parallel, which is suitable for 400 kHz with short wires. Add external 4.7-10 kΩ pull-ups only if a different module set has none; do not stack extra pull-ups blindly. If 400 kHz is unstable, shorten the wires first, then fall back to 100 kHz.
-- The DS3231 module has a battery charging circuit, so it is fitted with an LIR2032 (a plain CR2032 should not be used with it).
+- The DS3231 module has a charging circuit meant for a rechargeable LIR2032. This build uses a non-rechargeable CR2032, which is acceptable for a short demo; for long unattended use fit an LIR2032 or disable the charging circuit on the module.
 - Schematic: KiCad source in `hardware/kicad/`, exported to `docs/schematic/schematic.pdf` and `schematic.png`.

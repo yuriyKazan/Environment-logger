@@ -1,6 +1,7 @@
 # Environment Logger
 
-An autonomous ESP32-S3 telemetry logger: it reads temperature, humidity and pressure from a BME280 every 5 seconds, stamps each reading with a DS3231 real-time clock, prints a formatted line over UART, publishes the values over MQTT, and keeps running when the I2C bus misbehaves or a task hangs.
+An autonomous ESP32-S3 telemetry logger: it reads temperature, humidity and pressure from a BME280 every 5 seconds, stamps each reading with a DS3231 real-time clock, 
+prints a formatted line over UART, publishes the values over MQTT, and keeps running when the I2C bus misbehaves or a task hangs.
 
 ```
 [14:18:54] T:24.3 H:40% P:983 ERR:0
@@ -31,9 +32,12 @@ An autonomous ESP32-S3 telemetry logger: it reads temperature, humidity and pres
 
 ## 1. Project description
 
-**Problem.** A logger that sits unattended must keep producing trustworthy data. The usual failure modes are quiet ones: a loose wire makes the I2C bus hang, a task deadlocks, the clock battery dies and every record is stamped `2000-01-01`. A logger that stops without telling anyone is worse than no logger.
+**Problem.** A logger that sits unattended must keep producing trustworthy data. The usual failure modes are quiet ones: a loose wire makes the I2C bus hang, a task 
+deadlocks, the clock battery dies and every record is stamped `2000-01-01`. A logger that stops without telling anyone is worse than no logger.
 
-**Solution.** The firmware is split into independent FreeRTOS tasks (sensor, UART output, supervisor, MQTT). The measurement is an event-driven state machine with bounded retries, every wait has a timeout, the I2C bus is protected by one mutex, and a task watchdog resets the chip if a task stops running. After a reset the firmware reports why it restarted.
+**Solution.** The firmware is split into independent FreeRTOS tasks (sensor, UART output, supervisor, MQTT). The measurement is an event-driven state machine with 
+bounded retries, every wait has a timeout, the I2C bus is protected by one mutex, and a task watchdog resets the chip if a task stops running. After a reset the 
+firmware reports why it restarted.
 
 **Use cases.** Room or lab climate logging, a data source for a dashboard, and a small reference for building recoverable I2C firmware on ESP-IDF.
 
@@ -57,7 +61,7 @@ Board: ESP32-S3-DevKitM-1, powered over USB.
 | Part | Role | Interface | Address / pin |
 |---|---|---|---|
 | BME280 module | Temperature, humidity, pressure | I2C | `0x76` |
-| DS3231 module (with LIR2032) | Real-time clock | I2C, same bus | `0x68` (its EEPROM answers at `0x50`, unused) |
+| DS3231 module (with CR2032) | Real-time clock | I2C, same bus | `0x68` (its EEPROM answers at `0x50`, unused) |
 | LED_OK + 220 Ω | Heartbeat: T3 is alive | GPIO out | GPIO4 |
 | LED_ERR + 220 Ω | Error / recovery in progress | GPIO out | GPIO5 |
 | Button module (3 pins) | Operator input | GPIO in + interrupt | GPIO6, pressed = high |
@@ -77,11 +81,12 @@ GPIO5 --[220R]--|>|-- GND   (LED_ERR)
 GPIO6 ------------------ OUT  (button module: VCC to 3V3, GND to GND, pressed = high)
 ```
 
-Schematic: [`docs/schematic/schematic.png`](docs/schematic/schematic.png) ([PDF](docs/schematic/schematic.pdf)), KiCad sources in [`hardware/kicad/`](hardware/kicad/). More wiring notes: [`docs/hardware.md`](docs/hardware.md).
+Schematic: [`docs/schematic/schematic.png`](docs/schematic/schematic.png) ([PDF](docs/schematic/schematic.pdf)), KiCad sources in [`hardware/kicad/`](hardware/kicad/). 
+More wiring notes: [`docs/hardware.md`](docs/hardware.md).
 
 Notes:
 
-- The DS3231 module has a battery charging circuit, so it is fitted with a rechargeable LIR2032; a plain CR2032 should not be used with it.
+- The DS3231 module has a charging circuit meant for a rechargeable LIR2032. This build uses a non-rechargeable CR2032, which is acceptable for a short demo; for long unattended use fit an LIR2032 or disable the charging circuit on the module.
 - Wi-Fi: the ESP32-S3 supports **2.4 GHz networks only**.
 
 ## 4. Why these components
@@ -402,6 +407,7 @@ Logs are excerpts; private data (SSID, IP, MAC) is replaced with placeholders.
 
 - A button tap shorter than the 50 ms debounce quiet time loses its release event; the long-press timer then counts it as a short press after 3 s.
 - A bus reset cannot revive a device that is permanently dead or unpowered; every cycle is then logged as failed until it answers.
+- The DS3231 charging circuit is meant for a rechargeable LIR2032, but a non-rechargeable CR2032 is fitted (section 3). A non-rechargeable cell should not be charged: fine for a short demo, not for long unattended use.
 - The public MQTT broker has no authentication and no delivery guarantee (QoS 0); entries are dropped while disconnected.
 - 2.4 GHz Wi-Fi only.
 - The SCL pulses of the bus reset were not individually confirmed on the logic analyzer (the decoder merges them into the last NAK frame).
